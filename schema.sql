@@ -3,7 +3,7 @@ CREATE SCHEMA IF NOT EXISTS `prodcli` ;
 CREATE TABLE IF NOT EXISTS `prodcli`.`users` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `login` VARCHAR(45) NOT NULL,
-    `password_hash` VARCHAR(45) NOT NULL,
+    `password_hash` VARCHAR(255) NOT NULL,
     `role` VARCHAR(45) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `password_hash_UNIQUE` (`password_hash` ASC) VISIBLE,
