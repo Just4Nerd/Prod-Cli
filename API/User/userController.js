@@ -5,8 +5,8 @@ async function createUser(req, res) {
     const { login, password } = req.body;
     try {
         const password_hash = await hashPassword(password)
-        role = "client"
-        const result = await model.createUser(login, password_hash, role);
+        role_id = 1
+        const result = await model.createUser(login, password_hash, role_id);
         res.status(201).json({ message: 'User created successfully' });
     } catch (err) {
         console.error(err);
@@ -36,7 +36,7 @@ async function loginUser(req, res){
         if (result.length > 0) {
             password_match = await bcrypt.compare(password, result[0]['password_hash'])
             if (password_match) {
-                token = createToken(result[0]['id'], result[0]['login'], result[0]['role'])
+                token = createToken(result[0]['id'], result[0]['login'], result[0]['role_id'])
                 console.log(token)
                 // const decoded = jwt.verify(token, process.env.JWT_SECRET);
                 // console.log(decoded)
@@ -54,9 +54,15 @@ async function loginUser(req, res){
     }
 }
 
-function changeRole(req, res){
-    const { role } = req.body;
-    res.status(200).json({role: role})
+async function changeRole(req, res){
+    const { new_role, user_id } = req.body;
+
+    try {
+        const result = await model.updateUserRole(user_id, new_role)
+        res.status(200).json({message: "Success, role changed."})
+    } catch(error){
+        res.status(500).json({Error: error})
+    }
 }
 
 function createToken(id, login, role){

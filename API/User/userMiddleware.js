@@ -13,7 +13,8 @@ let loginUserSchema = yup.object().shape({
 });
 
 let roleChangeSchema = yup.object().shape({
-    role: yup.string().required(),
+    new_role: yup.number().required().positive().integer(),
+    user_id: yup.number().required().positive().integer(),
 });
 
 async function validateCreateUser(req, res, next) {
