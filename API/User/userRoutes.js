@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const {verifyClientToken, verifyBrokerToken} = require('../Auth/authMiddleware')
-const {createUser, loginUser, changeRole} = require('./userController')
-const {validateCreateUser, validateLoginUser, validateRoleChange} = require('./userMiddleware')
+const {verifyClientToken, verifyBrokerToken} = require('../Middleware/authMiddleware')
+const {createUser, loginUser, updateUser, getAllUsers, deleteUser} = require('./userController')
+const {validateCreateUser, validateLoginUser, validateUpdateUser} = require('../Middleware/userMiddleware')
+const {validateDelete} = require('../Middleware/generalMiddleware')
 
 router.post('/register', validateCreateUser, createUser),
 router.post('/login', validateLoginUser, loginUser)
-router.post('/role', [verifyBrokerToken, validateRoleChange], changeRole)
+router.post('/:id/update', [verifyBrokerToken, validateUpdateUser], updateUser)
+router.get('/getAll', verifyBrokerToken, getAllUsers)
+router.delete('/:id/', [verifyBrokerToken, validateDelete], deleteUser)
+
 
 module.exports = router;

@@ -30,16 +30,12 @@ async function hashPassword(password) {
 async function loginUser(req, res){
     const { login, password } = req.body;
     const bcrypt = require('bcrypt');
-    const jwt = require('jsonwebtoken');
     try {
         const result = await model.getUser(login);
         if (result.length > 0) {
             password_match = await bcrypt.compare(password, result[0]['password_hash'])
             if (password_match) {
                 token = createToken(result[0]['id'], result[0]['login'], result[0]['role_id'])
-                console.log(token)
-                // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-                // console.log(decoded)
                 res.status(200).json({ token: token });
 
             } else {
@@ -54,13 +50,47 @@ async function loginUser(req, res){
     }
 }
 
-async function changeRole(req, res){
-    const { new_role, user_id } = req.body;
-
+async function updateUser(req, res){
+    const { login, password, broker_secret} = req.body;
+    const {id} = req.params
+    const { BROKER_SECRET } = process.env;
     try {
-        const result = await model.updateUserRole(user_id, new_role)
-        res.status(200).json({message: "Success, role changed."})
+        let password_hash = ""
+        broker_error = false
+        if (password) {
+            if (broker_secret == BROKER_SECRET) {
+                password_hash = await hashPassword(password)
+            }
+            else {
+                broker_error = true;
+            }
+        }
+        if (!broker_error) {
+            const result = await model.updateUser(id, login, password_hash)
+            res.status(200).json({message: "Success: user updated."})
+        } else {
+            res.status(400).json({message: "Error: broker code is incorrect."})
+        }
     } catch(error){
+        res.status(500).json({Error: error})
+    }
+}
+
+async function getAllUsers(req, res){
+    try {
+        const result = await model.getUsers()
+        res.status(200).json({users: result})
+    } catch(error) {
+        res.status(500).json({Error: error})
+    }
+}
+
+async function deleteUser(req, res) {
+    const {id} = req.params
+    try {
+        const result = await model.deleteUser(id)
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch(error) {
         res.status(500).json({Error: error})
     }
 }
@@ -77,5 +107,7 @@ function createToken(id, login, role){
 module.exports = {
     createUser,
     loginUser,
-    changeRole
+    updateUser,
+    getAllUsers,
+    deleteUser
 }

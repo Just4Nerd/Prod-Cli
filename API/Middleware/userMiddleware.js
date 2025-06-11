@@ -12,9 +12,14 @@ let loginUserSchema = yup.object().shape({
     password: yup.string().required(),
 });
 
-let roleChangeSchema = yup.object().shape({
-    new_role: yup.number().required().positive().integer(),
-    user_id: yup.number().required().positive().integer(),
+let userUpdateSchema = yup.object().shape({
+    login: yup.string(),
+    password: yup.string().matches(password_regex).notRequired(),
+    broker_secret: yup.string().when('password', {
+        is: (val) => !!val,
+        then: (schema) => schema.required('Secret Code is required to update password.'),
+        otherwise: (schema) => schema.notRequired(),
+    })
 });
 
 async function validateCreateUser(req, res, next) {
@@ -36,14 +41,18 @@ async function validateLoginUser(req, res, next) {
 
 }
 
-async function validateRoleChange(req, res, next) {
+async function validateUpdateUser(req, res, next) {
     try {
-        req.body = await roleChangeSchema.validate(req.body);
+        const id = req.params.id;
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ error: 'Invalid or missing user ID' });
+        }
+        req.body = await userUpdateSchema.validate(req.body);
         next();
     } catch (err) {
         res.status(400).json({error: err.message});
     }
 }
 
-module.exports = {validateCreateUser, validateLoginUser, validateRoleChange};
+module.exports = {validateCreateUser, validateLoginUser, validateUpdateUser};
 
