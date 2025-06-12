@@ -8,7 +8,7 @@ let createProductSchema = yup.object().shape({
 });
 
 let addFeatureSchema = yup.object().shape({
-    content: yup.string().required(),
+    features: yup.array().of(yup.string().required()) .required().min(1)
 });
 
 let updateProductSchema = yup.object().shape({

@@ -7,7 +7,7 @@ function getAllProducts() {
             if (err) {
                 reject(err)
             } else {
-                sql = 'SELECT products.id, products.name AS product_name, categories.name AS category_name, description, price, categories.layout_type FROM prodcli.products INNER JOIN prodcli.categories ON prodcli.categories.id = prodcli.products.category_id;'
+                sql = 'SELECT products.id, products.name AS product_name, categories.id AS category_id, categories.name AS category_name, description, price, categories.layout_type FROM prodcli.products INNER JOIN prodcli.categories ON prodcli.categories.id = prodcli.products.category_id;'
                 connection.execute(sql, [], (error, results) => {
                     console.log(3, results)
                     if (error) {
@@ -35,6 +35,9 @@ function createProduct(name, description, category_id, price) {
                 connection.execute(sql, [name, description, category_id, price], (error, results) => {
                     if (error) {
                         console.error(error)
+                        if (error.sqlMessage.includes('products.name_UNIQUE')) {
+                            reject('Product Name already exists')
+                        }
                         reject(error)
                     } else {
                         resolve(results)
@@ -133,22 +136,23 @@ function deleteProduct(product_id) {
     });
 }
 
-function addFeature(product_id, content) {
+function addFeature(product_id, features) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
-                console.log("error")
                 reject(err)
             } else {
-                sql = 'INSERT INTO prodcli.product_features (`content`, `product_id`) VALUES (?, ?);'
-                connection.execute(sql, [content, product_id], (error, results) => {
-                    if (error) {
-                        console.error(error)
-                        reject(error)
-                    } else {
-                        resolve(results)
-                    }
-                });
+                features.forEach(feature => {
+                    sql = 'INSERT INTO prodcli.product_features (`content`, `product_id`) VALUES (?, ?);'
+                    connection.execute(sql, [feature, product_id], (error, results) => {
+                        if (error) {
+                            console.error(error)
+                            reject(error)
+                        } else {
+                            resolve(results)
+                        }
+                    });
+                })
                 connection.release();
             }
         })

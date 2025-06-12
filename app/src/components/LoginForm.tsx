@@ -18,18 +18,13 @@ export default function LoginForm({ setError }: LoginFormProps){
             let res = await APILogin(login, password)
             if (res.ok) {
                 const data = await res.json();
-                    // console.log("Logged in:", data['token']);
-                    localStorage.setItem('token', data['token']);
-                    router.push('/admin');
-                } else {
-                    console.log(res)
-                    setError("Failed to Login");
-                }
+                localStorage.setItem('token', data['token']);
+                router.push('/admin');
+            } else {
+                console.log(res)
+                setError("Failed to Login");
+            }
         }
-    }
-
-    function onInputChange(event: React.ChangeEvent<HTMLInputElement>){
-        setError('')
     }
     return (
         <form onSubmit={Login}>
@@ -38,11 +33,11 @@ export default function LoginForm({ setError }: LoginFormProps){
             </div>
             <div className="form-group py-4">
                 <label className="pb-1">Login</label>
-                <input type="login" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Login" onChange={onInputChange}></input>
+                <input type="login" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Login" onChange={() => setError('')}></input>
             </div>
             <div className="form-group">
                 <label className="pb-1">Password</label>
-                <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" onChange={onInputChange}></input>
+                <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" onChange={() => setError('')}></input>
             </div>
             <button type="submit" className="btn btn-primary mt-2">Submit</button>
         </form>

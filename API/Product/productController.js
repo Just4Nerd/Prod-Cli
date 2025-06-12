@@ -2,9 +2,8 @@ const model = require('./productModel')
 
 async function getAllProducts(req, res){
     try {
-        console.log(1)
         const result = await model.getAllProducts()
-        res.status(200).json({users: result})
+        res.status(200).json({products: result})
     } catch(error) {
         res.status(500).json({Error: error})
     }
@@ -14,7 +13,7 @@ async function createProduct(req, res) {
     const { name, description, category_id, price } = req.body;
     try {
         const result = await model.createProduct(name, description, category_id, price)
-        res.status(201).json({ message: 'Product created successfully' });
+        res.status(201).json({ message: 'Product created successfully', id: result.insertId});
     } catch(error) {
         res.status(500).json({Error: error})
     }
@@ -34,17 +33,17 @@ async function deleteProduct(req, res) {
     const {id} = req.params
     try {
         const result = await model.deleteProduct(id)
-        res.status(200).json({ message: 'Product deleted successfully' });
+        res.status(200).json({ message: 'Product deleted successfully'});
     } catch(error) {
         res.status(500).json({Error: error})
     }
 }
 
 async function addFeature(req, res) {
-    const { content } = req.body;
+    const { features } = req.body;
     const {id} = req.params
     try {
-        const result = await model.addFeature(id, content)
+        const result = await model.addFeature(id, features)
         res.status(200).json({ message: 'Feature added successfully' });
     } catch(error) {
         res.status(500).json({Error: error})

@@ -5,3 +5,49 @@ html {
 body {
     min-height: 100%;
 }
+
+.card {
+    min-height: 200px;
+}
+
+.card:hover{
+    cursor: pointer;
+}
+
+.box-list {
+    display: grid;
+    justify-content: center;
+    overflow: auto;
+    height: 75vh;
+}
+
+.page-title {
+    width: fit-content;
+}
+
+.box-item {
+    min-width: 40vw;
+    min-height: auto;
+}
+
+.right-btn {
+    justify-content: right;
+}
+
+.field-left {
+    margin-right: 20px;
+}
+
+.field-input {
+    height: 30px;
+}
+
+.add-new-btn {
+    width: 200px;
+}
+
+.error-box {
+    height:50px;
+    align-content: center;
+    border-radius: 5px;
+}
