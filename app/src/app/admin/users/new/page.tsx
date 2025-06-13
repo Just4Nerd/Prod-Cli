@@ -4,11 +4,10 @@ import { useSearchParams } from 'next/navigation';
 import { APIGetAllCategories } from '@/api/categories';
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from 'next/navigation';
-import NewProductForm from '@/components/NewProductForm';
+import NewUserForm from '@/components/NewUserForm';
 
 export default function New(){
     const router = useRouter();
-    const [categories,  setCategories] = useState<any[]>([]);
     const [token, setToken] = useState('')
 
     useEffect(() =>{
@@ -34,25 +33,15 @@ export default function New(){
             router.push('/');
         }
         // Fetch all Categories
-        getCategories(token)
         setToken(token)
     }, [])
 
     return(
         <div className="d-flex w-100 h-100 p-5">
             <div className="d-flex w-100 h-100 overflow-auto justify-content-center">
-                <NewProductForm editingProductId={null} categories={categories} token={token} useRouter={(e) => router.push(e)}/>
+                <NewUserForm editingUserId={null} token={token} useRouter={(e) => router.push(e)}/>
             </div>
         </div>
     )
 
-    async function getCategories(token){
-        let res = await APIGetAllCategories(token)
-        if (res.ok) {
-            const data = await res.json();
-            setCategories(data.categories)
-        } else {
-            console.log(res)
-        }
-    }
 }

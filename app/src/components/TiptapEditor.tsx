@@ -9,8 +9,8 @@ import BulletList from '@tiptap/extension-bullet-list';
 import ListItem from '@tiptap/extension-list-item';
 import TextStyle from '@tiptap/extension-text-style';
 import FontFamily from '@tiptap/extension-font-family';
-import { FontSize } from '@/components/TipTapFontSizeExtention';
-import React from 'react';
+// import { FontSize } from '@/components/TipTapFontSizeExtention';
+import React, { useEffect } from 'react';
 
 type Props = {
   content: string;
@@ -29,13 +29,17 @@ export default function TiptapEditor({ content, onChange }: Props) {
       FontFamily.configure({
         types: ['textStyle'],
       }),
-      FontSize.configure({}),
+      // FontSize.configure({}),
     ],
     content,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
   });
+  useEffect(() => {
+  if (editor && content !== editor.getHTML()) {
+    editor.commands.setContent(content, false); // false = don't emit update
+  }}, [content, editor]);
 
   if (!editor) return null;
 
@@ -81,7 +85,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <option value="Courier New">Courier New</option>
           <option value="Times New Roman">Times New Roman</option>
         </select>
-        <select
+        {/* <select
             className="form-select form-select-sm w-auto mx-1 d-inline"
             onChange={(e) => editor.chain().focus().setFontSize(e.target.value).run()}
             defaultValue=""
@@ -93,7 +97,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
             <option value="18px">18px</option>
             <option value="24px">24px</option>
             <option value="32px">32px</option>
-            </select>
+          </select> */}
       </div>
 
       <EditorContent editor={editor} className="min-h-[150px] border rounded p-2 bg-body" />

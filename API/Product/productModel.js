@@ -3,13 +3,53 @@ const pool = require('../DB/db')
 function getAllProducts() {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
-            console.log(2)
             if (err) {
                 reject(err)
             } else {
                 sql = 'SELECT products.id, products.name AS product_name, categories.id AS category_id, categories.name AS category_name, description, price, categories.layout_type FROM prodcli.products INNER JOIN prodcli.categories ON prodcli.categories.id = prodcli.products.category_id;'
                 connection.execute(sql, [], (error, results) => {
-                    console.log(3, results)
+                    if (error) {
+                        console.error(error)
+                        reject(error)
+                    } else {
+                        resolve(results)
+                    }
+                });
+                connection.release();
+            }
+        })
+    });
+}
+
+function getProduct(product_id) {
+    return new Promise((resolve, reject) => {
+        pool.getConnection( function(err, connection) {
+            if (err) {
+                reject(err)
+            } else {
+                sql = 'SELECT products.id, products.name AS product_name, categories.id AS category_id, categories.name AS category_name, description, price, categories.layout_type FROM prodcli.products INNER JOIN prodcli.categories ON prodcli.categories.id = prodcli.products.category_id WHERE products.id = ?;'
+                connection.execute(sql, [product_id], (error, results) => {
+                    if (error) {
+                        console.error(error)
+                        reject(error)
+                    } else {
+                        resolve(results)
+                    }
+                });
+                connection.release();
+            }
+        })
+    });
+}
+
+function getFeatures(product_id) {
+    return new Promise((resolve, reject) => {
+        pool.getConnection( function(err, connection) {
+            if (err) {
+                reject(err)
+            } else {
+                sql = 'SELECT * FROM prodcli.product_features WHERE product_id = ?;'
+                connection.execute(sql, [product_id], (error, results) => {
                     if (error) {
                         console.error(error)
                         reject(error)
@@ -159,22 +199,23 @@ function addFeature(product_id, features) {
     });
 }
 
-function deleteFeature(feature_id) {
+function deleteFeatures(features) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
-                console.log("error")
                 reject(err)
             } else {
-                sql = 'DELETE FROM prodcli.product_features WHERE id = ?'
-                connection.execute(sql, [feature_id], (error, results) => {
-                    if (error) {
-                        console.error(error)
-                        reject(error)
-                    } else {
-                        resolve(results)
-                    }
-                });
+                features.forEach(feature_id => {
+                    sql = 'DELETE FROM prodcli.product_features WHERE id = ?'
+                    connection.execute(sql, [feature_id], (error, results) => {
+                        if (error) {
+                            console.error(error)
+                            reject(error)
+                        } else {
+                            resolve(results)
+                        }
+                    });
+                })
                 connection.release();
             }
         })
@@ -187,5 +228,7 @@ module.exports = {
     updateProduct,
     deleteProduct,
     addFeature,
-    deleteFeature
+    deleteFeatures,
+    getProduct,
+    getFeatures
 }

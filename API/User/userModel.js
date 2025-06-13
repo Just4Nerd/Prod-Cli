@@ -92,7 +92,7 @@ function getUsers() {
             if (err) {
                 reject(err)
             } else {
-                sql = 'SELECT * FROM prodcli.users;'
+                sql = 'SELECT users.id, login, users.role_id, roles.name AS role_name FROM prodcli.users INNER JOIN prodcli.roles ON prodcli.users.role_id = prodcli.roles.id;'
                 connection.execute(sql, [], (error, results) => {
                     if (error) {
                         console.error(error)

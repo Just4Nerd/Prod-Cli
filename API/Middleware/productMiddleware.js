@@ -8,7 +8,11 @@ let createProductSchema = yup.object().shape({
 });
 
 let addFeatureSchema = yup.object().shape({
-    features: yup.array().of(yup.string().required()) .required().min(1)
+    features: yup.array().of(yup.string().required()).required().min(1)
+});
+
+let delFeaturesSchema = yup.object().shape({
+    features: yup.array().of(yup.number().required()).required().min(1)
 });
 
 let updateProductSchema = yup.object().shape({
@@ -65,8 +69,32 @@ async function validateAddFeature(req, res, next) {
     }
 }
 
+async function validateDelFeatures(req, res, next) {
+    try {
+        console.log("here")
+        req.body = await delFeaturesSchema.validate(req.body);
+        next();
+    } catch (err) {
+        res.status(400).json({error: err.message});
+    }
+}
+
+async function validateGetProduct(req, res, next) {
+    try {
+        const id = req.params.id;
+        if (!id || isNaN(Number(id))) {
+            return res.status(400).json({ error: 'Invalid or missing user ID' });
+        }
+        next();
+    } catch (err) {
+        res.status(400).json({error: err.message});
+    }
+}
+
 module.exports = {
     validateCreateProduct, 
     validateUpdateProduct, 
     validateAddFeature,
+    validateGetProduct,
+    validateDelFeatures
 };

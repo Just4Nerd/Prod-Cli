@@ -4,10 +4,12 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from 'next/navigation';
 import {APIGetAllProducts} from '@/api/products'
 import ProductBox from '@/components/ProductBox'
+import {APIGetAllUsers} from '@/api/users'
+import UserBox from '@/components/UserBox';
 
-export default function Admin(){
+export default function Users(){
     const router = useRouter();
-    const [products,  setProducts] = useState<any[]>([]);
+    const [users,  setUsers] = useState<any[]>([]);
     const [token, setToken] = useState('')
 
     useEffect(() =>{
@@ -34,16 +36,16 @@ export default function Admin(){
         }
 
         // Fetch all Products
-        getProducts(token)
+        getUsers(token)
         setToken(token)
     }, [])
 
-    async function getProducts(token){
-        let res = await APIGetAllProducts(token)
+    async function getUsers(token){
+        let res = await APIGetAllUsers(token)
         if (res.ok) {
             const data = await res.json(); 
-            data.products.sort((a, b) => a.id - b.id);
-            setProducts(data.products)
+            data.users.sort((a, b) => a.id - b.id);
+            setUsers(data.users)
         } else {
             console.log(res)
         }
@@ -51,11 +53,11 @@ export default function Admin(){
 
     function onAddNewClick(event: React.MouseEvent<HTMLButtonElement>) {
         event.preventDefault()
-        router.push('/admin/products/new');
+        router.push('/admin/users/new');
     }
 
-    function updateProduct(id) {
-        setProducts(prev => prev.filter(product => product.id !== id));
+    function updateUser(id) {
+        setUsers(prev => prev.filter(user => user.id !== id));
     }
         
     return(
@@ -64,7 +66,7 @@ export default function Admin(){
                 <div className="page-back-admin p-1">
                     <button type="button" className="btn btn-secondary " onClick={() => router.push('/admin')}>Back To Admin Panel</button>
                 </div>
-                <h1 className="page-title">Products</h1>
+                <h1 className="page-title">Users</h1>
             </div>
             <div className="page-header mt-4 d-flex justify-content-center w-100">
                 <button type="button" className="btn btn-success add-new-btn" onClick={onAddNewClick}>Add New</button>
@@ -73,8 +75,8 @@ export default function Admin(){
             <div className="page-content w-100 pt-5">
                 <div className="container">
                     <div className="box-list">
-                        {products.map((product, idx) => (
-                            <ProductBox updateProducts={updateProduct} token={token} id = {product.id} key={idx} category_id={product.category_id} name={product.product_name} description={product.description} price={product.price.toFixed(2)} category={product.category_name} layout_type={product.layout_type}/>
+                        {users.map((user, idx) => (
+                            <UserBox updateUsers={updateUser} token={token} id = {user.id} key={idx} login={user.login} role_name={user.role_name} role_id={user.role_id}/>
                         ))}
                     </div>
                 </div>

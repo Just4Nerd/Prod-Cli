@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from 'next/navigation';
 import NavBox from '@/components/NavBox';
 
-export default function Admin(){
+export default function Products(){
     const router = useRouter();
     const [role, setRole] = useState<string | null>(null);
 
@@ -16,6 +16,13 @@ export default function Admin(){
         }
         try {
             const decoded = jwtDecode(token);
+            const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+            if (decoded.exp && decoded.exp < currentTime) {
+                console.log('Token expired');
+                localStorage.removeItem('token');
+                router.push('/');
+                return;
+            }
             if (decoded['role'] != '2') {
                 router.push('/');
                 return;

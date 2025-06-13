@@ -1,12 +1,14 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { APIGetAllCategories } from '@/api/categories';
-import { jwtDecode } from "jwt-decode";
-import { useRouter } from 'next/navigation';
 import NewProductForm from '@/components/NewProductForm';
+import { jwtDecode } from 'jwt-decode';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-export default function New(){
+export default function EditProduct() {
+    const params = useParams();
+    const productId = params.product_id;
+    var isEdit = false
     const router = useRouter();
     const [categories,  setCategories] = useState<any[]>([]);
     const [token, setToken] = useState('')
@@ -41,7 +43,7 @@ export default function New(){
     return(
         <div className="d-flex w-100 h-100 p-5">
             <div className="d-flex w-100 h-100 overflow-auto justify-content-center">
-                <NewProductForm editingProductId={null} categories={categories} token={token} useRouter={(e) => router.push(e)}/>
+                <NewProductForm editingProductId={Number(productId)} categories={categories} token={token} useRouter={(t) => router.push(t)}/>
             </div>
         </div>
     )

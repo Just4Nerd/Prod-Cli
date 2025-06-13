@@ -2,21 +2,18 @@
 import { useRef } from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { APIDelProduct } from '@/api/products';
+import { APIDelUser } from '@/api/users';
 
-type ProductBoxProps = {
+type UserBoxProps = {
     id: number,
-    name: string;
-    category: string;
-    category_id: number;
-    description: string;
-    layout_type: string;
-    price: string;
+    login: string;
     token: string;
-    updateProducts: (number) => void;
+    role_name: string;
+    role_id: number;
+    updateUsers: (number) => void;
 }; 
 
-export default function NavBox({ updateProducts, token, id, name, category, description, layout_type, price}: ProductBoxProps){
+export default function NavBox({ updateUsers, token, id, login, role_name, role_id}: UserBoxProps){
     // const nameRef = useRef<HTMLInputElement>(null);
     // const categoryRef = useRef<HTMLInputElement>(null);
     // const descriptionRef = useRef<HTMLInputElement>(null);
@@ -26,22 +23,15 @@ export default function NavBox({ updateProducts, token, id, name, category, desc
 
     function onEditClick(event: React.MouseEvent<HTMLAnchorElement>){
         event.preventDefault()
-        console.log(id, name, category)
-        router.push('/admin/products/' + id);
+        router.push('/admin/users/' + id);
     }
 
-    async function onDelClick(event: React.MouseEvent<HTMLAnchorElement>, product_id: number) {
+    async function onDelClick(event: React.MouseEvent<HTMLAnchorElement>, user_id: number) {
         event.preventDefault()
-        let res = await APIDelProduct(token, product_id)
+        let res = await APIDelUser(token, user_id)
 
         if (res.ok) {
-            updateProducts(product_id)
-            // updateProducts(prevProducts => {
-            //     const index = prevProducts.findIndex(p => p.id === product_id);
-            //     if (index === -1) return prevProducts; // no match, return original
-            //     // Create a new array without the item at index
-            //     return [...prevProducts.slice(0, index), ...prevProducts.slice(index + 1)];
-            // });
+            updateUsers(user_id)
         } else {
             console.log("error")
         }
@@ -53,10 +43,10 @@ export default function NavBox({ updateProducts, token, id, name, category, desc
             <div className="card-body">
                 <div className="box-field d-flex">
                     <div className="field-left mr-3">
-                        <h5>Name:</h5>
+                        <h5>Login:</h5>
                     </div>
                     <div className="field-right">
-                        <h5>{name}</h5>
+                        <h5>{login}</h5>
                     </div>
                 </div>
                 <hr/>
@@ -70,18 +60,10 @@ export default function NavBox({ updateProducts, token, id, name, category, desc
                 </div>
                 <div className="box-field d-flex">
                     <div className="field-left mr-3">
-                        <p>Category:</p>
+                        <p>Role:</p>
                     </div>
                     <div className="field-right">
-                        <p>{category}</p>
-                    </div>
-                </div>
-                <div className="box-field d-flex">
-                    <div className="field-left mr-3">
-                        <p>Price:</p>
-                    </div>
-                    <div className="field-right">
-                        <p>{price}</p>
+                        <p>{role_name}</p>
                     </div>
                 </div>
                 <hr/>

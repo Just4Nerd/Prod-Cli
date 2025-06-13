@@ -19,6 +19,7 @@ body {
     justify-content: center;
     overflow: auto;
     height: 75vh;
+    height: fit-content;
 }
 
 .page-title {
@@ -50,4 +51,10 @@ body {
     height:50px;
     align-content: center;
     border-radius: 5px;
+}
+
+.page-back-admin {
+    position: absolute;
+    left: 0;
+    cursor: pointer;
 }

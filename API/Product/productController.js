@@ -9,6 +9,26 @@ async function getAllProducts(req, res){
     }
 }
 
+async function getFeatures(req, res){
+    try {
+        const {id} = req.params
+        const result = await model.getFeatures(id)
+        res.status(200).json({features: result})
+    } catch(error) {
+        res.status(500).json({Error: error})
+    }
+}
+
+async function getProduct(req, res){
+    try {
+        const {id} = req.params
+        const result = await model.getProduct(id)
+        res.status(200).json({product: result})
+    } catch(error) {
+        res.status(500).json({Error: error})
+    }
+}
+
 async function createProduct(req, res) {
     const { name, description, category_id, price } = req.body;
     try {
@@ -50,11 +70,11 @@ async function addFeature(req, res) {
     }
 }
 
-async function deleteFeature(req, res) {
-    const {id} = req.params
+async function deleteFeatures(req, res) {
+    const { features } = req.body;
     try {
-        const result = await model.deleteFeature(id)
-        res.status(200).json({ message: 'Feature deleted successfully' });
+        const result = await model.deleteFeatures(features)
+        res.status(200).json({ message: 'Features deleted successfully' });
     } catch(error) {
         res.status(500).json({Error: error})
     }
@@ -66,5 +86,7 @@ module.exports = {
     updateProduct,
     deleteProduct,
     addFeature,
-    deleteFeature
+    deleteFeatures,
+    getProduct, 
+    getFeatures
 }
