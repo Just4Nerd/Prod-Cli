@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 export default function EditProduct() {
     const params = useParams();
     const productId = params.product_id;
-    var isEdit = false
     const router = useRouter();
     const [categories,  setCategories] = useState<any[]>([]);
     const [token, setToken] = useState('')
@@ -41,9 +40,14 @@ export default function EditProduct() {
     }, [])
 
     return(
-        <div className="d-flex w-100 h-100 p-5">
+        <div className="d-inherit w-100 h-100 p-5">
+            <div className=''>
+                <button type="button" onClick={() => router.push('/admin/products')}className="btn btn-secondary">Back</button>
+            </div>
             <div className="d-flex w-100 h-100 overflow-auto justify-content-center">
-                <NewProductForm editingProductId={Number(productId)} categories={categories} token={token} useRouter={(t) => router.push(t)}/>
+                { token &&
+                    <NewProductForm editingProductId={Number(productId)} categories={categories} token={token} useRouter={(t) => router.push(t)}/>
+                }
             </div>
         </div>
     )

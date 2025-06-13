@@ -13,13 +13,12 @@ let loginUserSchema = yup.object().shape({
 });
 
 let userUpdateSchema = yup.object().shape({
-    login: yup.string(),
+    login: yup.string().notRequired(),
     password: yup.string().matches(password_regex).notRequired(),
-    broker_secret: yup.string().when('password', {
-        is: (val) => !!val,
-        then: (schema) => schema.required('Secret Code is required to update password.'),
-        otherwise: (schema) => schema.notRequired(),
-    })
+});
+
+let verifyBrokerCodeSchema = yup.object().shape({
+    broker_code: yup.string().required()
 });
 
 async function validateCreateUser(req, res, next) {
@@ -54,5 +53,14 @@ async function validateUpdateUser(req, res, next) {
     }
 }
 
-module.exports = {validateCreateUser, validateLoginUser, validateUpdateUser};
+async function validateBrokerCode(req, res, next) {
+    try {
+        req.body = await verifyBrokerCodeSchema.validate(req.body);
+        next();
+    } catch (err) {
+        res.status(400).json({error: err.message});
+    }
+}
+
+module.exports = {validateCreateUser, validateLoginUser, validateUpdateUser, validateBrokerCode};
 

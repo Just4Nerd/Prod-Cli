@@ -9,6 +9,7 @@ export default function NavBox({ text, description, goToPage }: NavBoxProps){
         <div className="card my-2 pe-auto" onClick={(e) => goToPage(e, text)}>
             <div className="card-body">
                 <h5 className="card-title">{text}</h5>
+                <hr></hr>
                 <p className="card-text">{description}</p>
             </div>
         </div>

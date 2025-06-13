@@ -1,6 +1,6 @@
 const yup = require('yup');
 
-async function validateDelete(req, res, next) {
+async function validateId(req, res, next) {
     try {
         const id = req.params.id;
         if (!id || isNaN(Number(id))) {
@@ -13,5 +13,5 @@ async function validateDelete(req, res, next) {
 }
 
 module.exports = {
-    validateDelete
+    validateId
 }

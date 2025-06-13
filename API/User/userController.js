@@ -39,9 +39,11 @@ async function loginUser(req, res){
                 res.status(200).json({ token: token });
 
             } else {
+                console.log(1)
                 res.status(400).json({message: 'Failed to login. Invalid credentials.'})
             }
         } else {
+            console.log(2, result)
             res.status(400).json({message: 'Failed to login. Invalid credentials.'})
         }
     } catch (err) {
@@ -53,24 +55,13 @@ async function loginUser(req, res){
 async function updateUser(req, res){
     const { login, password, broker_secret} = req.body;
     const {id} = req.params
-    const { BROKER_SECRET } = process.env;
     try {
         let password_hash = ""
-        broker_error = false
         if (password) {
-            if (broker_secret == BROKER_SECRET) {
-                password_hash = await hashPassword(password)
-            }
-            else {
-                broker_error = true;
-            }
+            password_hash = await hashPassword(password)
         }
-        if (!broker_error) {
-            const result = await model.updateUser(id, login, password_hash)
-            res.status(200).json({message: "Success: user updated."})
-        } else {
-            res.status(400).json({message: "Error: broker code is incorrect."})
-        }
+        const result = await model.updateUser(id, login, password_hash)
+        res.status(200).json({message: "Success: user updated."})
     } catch(error){
         res.status(500).json({Error: error})
     }
@@ -83,6 +74,23 @@ async function getAllUsers(req, res){
     } catch(error) {
         res.status(500).json({Error: error})
     }
+}
+
+async function getUser(req, res){
+    try {
+        const {id} = req.params
+        const result = await model.getUserEditData(id)
+        res.status(200).json({user: result})
+    } catch(error) {
+        res.status(500).json({Error: error})
+    }
+}
+
+async function verifyBroker(req, res){
+    const { broker_code} = req.body;
+    const { BROKER_SECRET } = process.env;
+    if (broker_code == BROKER_SECRET) {res.status(200).json({message: 'Success'})}
+    else {res.status(400).json({error: 'Incorrect Broker Code'})}
 }
 
 async function deleteUser(req, res) {
@@ -109,5 +117,7 @@ module.exports = {
     loginUser,
     updateUser,
     getAllUsers,
-    deleteUser
+    deleteUser,
+    getUser,
+    verifyBroker
 }

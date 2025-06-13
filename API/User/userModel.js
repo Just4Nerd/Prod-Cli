@@ -86,6 +86,27 @@ function getUser(login) {
     });
 }
 
+function getUserEditData(user_id) {
+    return new Promise((resolve, reject) => {
+        pool.getConnection( function(err, connection) {
+            if (err) {
+                reject(err)
+            } else {
+                sql = 'SELECT id, login FROM prodcli.users WHERE id = ?;'
+                connection.execute(sql, [user_id], (error, results) => {
+                    if (error) {
+                        console.error(error)
+                        reject(error)
+                    } else {
+                        resolve(results)
+                    }
+                });
+                connection.release();
+            }
+        })
+    });
+}
+
 function getUsers() {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -138,5 +159,6 @@ module.exports = {
     getUser,
     updateUser,
     getUsers,
-    deleteUser
+    deleteUser,
+    getUserEditData
 }

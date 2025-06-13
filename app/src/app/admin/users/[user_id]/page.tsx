@@ -1,12 +1,14 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { APIGetAllCategories } from '@/api/categories';
-import { jwtDecode } from "jwt-decode";
-import { useRouter } from 'next/navigation';
+import NewProductForm from '@/components/NewProductForm';
 import NewUserForm from '@/components/NewUserForm';
+import { jwtDecode } from 'jwt-decode';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-export default function New(){
+export default function EditUser() {
+    const params = useParams();
+    const userId = params.user_id;
     const router = useRouter();
     const [token, setToken] = useState('')
 
@@ -32,6 +34,7 @@ export default function New(){
         } catch(error) {
             router.push('/');
         }
+        console.log('setting', token)
         // Fetch all Categories
         setToken(token)
     }, [])
@@ -43,10 +46,9 @@ export default function New(){
             </div>
             <div className="d-flex w-100 h-100 overflow-auto justify-content-center">
                 { token &&
-                    <NewUserForm editingUserId={null} token={token} useRouter={(e) => router.push(e)}/>
+                    <NewUserForm editingUserId={Number(userId)} token={token} useRouter={(t) => router.push(t)}/>
                 }
             </div>
         </div>
     )
-
 }

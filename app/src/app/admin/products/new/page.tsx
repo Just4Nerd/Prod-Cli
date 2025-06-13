@@ -39,9 +39,14 @@ export default function New(){
     }, [])
 
     return(
-        <div className="d-flex w-100 h-100 p-5">
+        <div className="d-inherit w-100 h-100 p-5">
+            <div className=''>
+                <button type="button" onClick={() => router.push('/admin/products')}className="btn btn-secondary">Back</button>
+            </div>
             <div className="d-flex w-100 h-100 overflow-auto justify-content-center">
-                <NewProductForm editingProductId={null} categories={categories} token={token} useRouter={(e) => router.push(e)}/>
+                { token &&
+                    <NewProductForm editingProductId={null} categories={categories} token={token} useRouter={(e) => router.push(e)}/>
+                }
             </div>
         </div>
     )

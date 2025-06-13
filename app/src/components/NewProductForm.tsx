@@ -32,14 +32,16 @@ export default function NewProductForm({categories, token, useRouter, editingPro
     // let isEdit = false;
 
     useEffect(() =>{
+        console.log('111', token)
         if (editingProductId != null) {
             // isEdit = true;
             getProductData()
         }
-    }, [])
+    }, [token])
 
     async function getProductData() {
         let res = await APIGetProduct(token, editingProductId)
+        console.log(token)
         if (res.ok){
             let data = await res.json()
             data = data.product
