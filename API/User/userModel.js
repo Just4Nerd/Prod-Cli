@@ -71,7 +71,7 @@ function getUser(login) {
             if (err) {
                 reject(err)
             } else {
-                sql = 'SELECT * FROM prodcli.users WHERE login = ?;'
+                sql = 'SELECT * FROM prodcli.users WHERE users.login = ?;'
                 connection.execute(sql, [login], (error, results) => {
                     if (error) {
                         console.error(error)
@@ -92,7 +92,7 @@ function getUserEditData(user_id) {
             if (err) {
                 reject(err)
             } else {
-                sql = 'SELECT users.id AS id, login, roles.name AS role_name FROM prodcli.users INNER JOIN prodcli.roles ON users.role_id = roles.id WHERE users.id = ?;'
+                sql = 'SELECT users.id AS id, login, roles.name AS role_name FROM prodcli.users INNER JOIN prodcli.roles ON users.role_id = roles.id WHERE users.id = ? AND roles.name != "broker";'
                 connection.execute(sql, [user_id], (error, results) => {
                     if (error) {
                         console.error(error)
@@ -113,7 +113,7 @@ function getUsers() {
             if (err) {
                 reject(err)
             } else {
-                sql = 'SELECT users.id, login, users.role_id, roles.name AS role_name FROM prodcli.users INNER JOIN prodcli.roles ON prodcli.users.role_id = prodcli.roles.id;'
+                sql = 'SELECT users.id, login, users.role_id, roles.name AS role_name FROM prodcli.users INNER JOIN prodcli.roles ON prodcli.users.role_id = prodcli.roles.id WHERE roles.name != "broker";'
                 connection.execute(sql, [], (error, results) => {
                     if (error) {
                         console.error(error)

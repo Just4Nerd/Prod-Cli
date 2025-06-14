@@ -17,6 +17,7 @@ export default function EditUser() {
     const [userLogin, setUserLogin] = useState('')
     const [userRole, setUserRole] = useState('')
     const [userProductView, setView] = useState([])
+    const [error, setError] = useState('');
 
     useEffect(() =>{
         let token = localStorage.getItem('token');
@@ -77,6 +78,24 @@ export default function EditUser() {
         }
     }
 
+    function updateViewId(newId, userId, productId) {
+        setView(prev => prev.map(view =>
+            view.user_id === userId && view.product_id === productId
+                ? { ...view, id: newId }
+                : view
+            )
+        );
+    }
+
+    function updateShows(new_description, new_price, new_features, userId, productId) {
+        setView(prev => prev.map(view =>
+            view.user_id === userId && view.product_id === productId
+                ? { ...view, show_description: new_description, show_price: new_price, show_features: new_features }
+                : view
+            )
+        );
+    }
+
     return(
         <div className="d-inline-block h-100 w-100">
             <div className="page-header d-flex justify-content-center w-100">
@@ -125,8 +144,15 @@ export default function EditUser() {
             <div className="page-content w-100 pt-5">
                 <div className="container">
                     <div className="box-list">
+                        {error? 
+                            <div className="form-group row d-flex justify-content-center error-box bg-danger my-4">
+                                {error}
+                            </div>
+                            :
+                            <div></div>
+                        }
                         {userProductView.map((view, idx) => ( 
-                            <ViewUserBox key={idx} id={view.id} token={token} userId={view.user_id} productId={view.product_id} productName={view.product_name} showDescription={view.show_description} showPrice={view.show_price} showFeatures={view.show_features} />
+                            <ViewUserBox updateUserProdShow={updateShows} updateUserProd={updateViewId} updateError = {setError}key={idx} id={view.id} token={token} userId={view.user_id} productId={view.product_id} productName={view.product_name} showDescription={view.show_description} showPrice={view.show_price} showFeatures={view.show_features} />
                         ))}
                     </div>
                 </div>
