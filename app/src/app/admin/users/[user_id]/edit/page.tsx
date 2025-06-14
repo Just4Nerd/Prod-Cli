@@ -1,15 +1,15 @@
 'use client';
 import { APIGetAllCategories } from '@/api/categories';
 import NewProductForm from '@/components/NewProductForm';
+import NewUserForm from '@/components/NewUserForm';
 import { jwtDecode } from 'jwt-decode';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export default function EditProduct() {
+export default function EditUser() {
     const params = useParams();
-    const productId = params.product_id;
+    const userId = params.user_id;
     const router = useRouter();
-    const [categories,  setCategories] = useState<any[]>([]);
     const [token, setToken] = useState('')
 
     useEffect(() =>{
@@ -34,31 +34,21 @@ export default function EditProduct() {
         } catch(error) {
             router.push('/');
         }
+        console.log('setting', token)
         // Fetch all Categories
-        getCategories(token)
         setToken(token)
     }, [])
 
     return(
         <div className="d-inherit w-100 h-100 p-5">
             <div className=''>
-                <button type="button" onClick={() => router.push('/admin/products')}className="btn btn-secondary">Back</button>
+                <button type="button" onClick={() => router.push('/admin/users')}className="btn btn-secondary">Back</button>
             </div>
             <div className="d-flex w-100 h-100 overflow-auto justify-content-center">
-                {/* { token &&
-                    <NewProductForm editingProductId={Number(productId)} categories={categories} token={token} useRouter={(t) => router.push(t)}/>
-                } */}
+                { token &&
+                    <NewUserForm editingUserId={Number(userId)} token={token} useRouter={(t) => router.push(t)}/>
+                }
             </div>
         </div>
     )
-
-    async function getCategories(token){
-        let res = await APIGetAllCategories(token)
-        if (res.ok) {
-            const data = await res.json();
-            setCategories(data.categories)
-        } else {
-            console.log(res)
-        }
-    }
 }

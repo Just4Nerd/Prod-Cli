@@ -45,9 +45,9 @@ export default function EditProduct() {
                 <button type="button" onClick={() => router.push('/admin/products')}className="btn btn-secondary">Back</button>
             </div>
             <div className="d-flex w-100 h-100 overflow-auto justify-content-center">
-                {/* { token &&
+                { token &&
                     <NewProductForm editingProductId={Number(productId)} categories={categories} token={token} useRouter={(t) => router.push(t)}/>
-                } */}
+                }
             </div>
         </div>
     )

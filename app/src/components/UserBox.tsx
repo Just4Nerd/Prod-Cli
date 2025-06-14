@@ -13,7 +13,7 @@ type UserBoxProps = {
     updateUsers: (number) => void;
 }; 
 
-export default function NavBox({ updateUsers, token, id, login, role_name, role_id}: UserBoxProps){
+export default function UserBox({ updateUsers, token, id, login, role_name, role_id}: UserBoxProps){
     // const nameRef = useRef<HTMLInputElement>(null);
     // const categoryRef = useRef<HTMLInputElement>(null);
     // const descriptionRef = useRef<HTMLInputElement>(null);
@@ -23,7 +23,7 @@ export default function NavBox({ updateUsers, token, id, login, role_name, role_
 
     function onEditClick(event: React.MouseEvent<HTMLAnchorElement>){
         event.preventDefault()
-        router.push('/admin/users/' + id);
+        router.push('/admin/users/' + id + '/edit');
     }
 
     async function onDelClick(event: React.MouseEvent<HTMLAnchorElement>, user_id: number) {
@@ -41,7 +41,7 @@ export default function NavBox({ updateUsers, token, id, login, role_name, role_
     return(
         <div className="box-item card my-2">
             <div className="card-body">
-                <div className="box-field d-flex">
+                <div className="box-field d-flex box-name" onClick={(e) => router.push('/admin/users/' + id)}>
                     <div className="field-left mr-3">
                         <h5>Login:</h5>
                     </div>

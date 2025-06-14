@@ -92,7 +92,7 @@ function getUserEditData(user_id) {
             if (err) {
                 reject(err)
             } else {
-                sql = 'SELECT id, login FROM prodcli.users WHERE id = ?;'
+                sql = 'SELECT users.id AS id, login, roles.name AS role_name FROM prodcli.users INNER JOIN prodcli.roles ON users.role_id = roles.id WHERE users.id = ?;'
                 connection.execute(sql, [user_id], (error, results) => {
                     if (error) {
                         console.error(error)

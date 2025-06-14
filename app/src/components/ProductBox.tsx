@@ -27,7 +27,7 @@ export default function NavBox({ updateProducts, token, id, name, category, desc
     function onEditClick(event: React.MouseEvent<HTMLAnchorElement>){
         event.preventDefault()
         console.log(id, name, category)
-        router.push('/admin/products/' + id);
+        router.push('/admin/products/' + id + '/edit');
     }
 
     async function onDelClick(event: React.MouseEvent<HTMLAnchorElement>, product_id: number) {
@@ -51,7 +51,7 @@ export default function NavBox({ updateProducts, token, id, name, category, desc
     return(
         <div className="box-item card my-2">
             <div className="card-body">
-                <div className="box-field d-flex">
+                <div className="box-field d-flex box-name" onClick={(e) => router.push('/admin/products/' + id)}>
                     <div className="field-left mr-3">
                         <h5>Name:</h5>
                     </div>

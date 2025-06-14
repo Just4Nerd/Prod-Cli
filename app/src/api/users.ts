@@ -16,6 +16,15 @@ export async function APIGetUser(token: string, user_id : number) {
     return res;
 }
 
+export async function APIGetUserProductView(token: string, user_id : number) {
+    const res = await fetch(`http://localhost:8000/user/${user_id}/productview`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', token: token }
+    });
+
+    return res;
+}
+
 export async function APIDelUser(token: string, user_id: number) {
     const res = await fetch(`http://localhost:8000/user/${user_id}`, {
         method: 'DELETE',

@@ -1,4 +1,6 @@
 const model = require('./userModel')
+const user_prod_model = require('../UserProductVisibility/userProductModel')
+const prodcuts_model = require('../Product/productModel')
 require('dotenv').config();
 
 async function createUser(req, res) {
@@ -86,6 +88,30 @@ async function getUser(req, res){
     }
 }
 
+async function getUserProductView(req, res){
+    try {
+        const {id} = req.params
+        const prodct_view = await user_prod_model.getUserProdByUserId(id)
+        const all_products = await prodcuts_model.getAllProducts()
+
+        // add all products to the product view so that they can be enabled in the future
+        all_products.forEach(product => {
+            if (!prodct_view.some(view => view.product_id == product.id)) {
+                prodct_view.push({id: -1, user_id: id, product_id: product.id,show_description: 0, show_price: 0, show_features: 0})
+            }
+        })
+        console.log(all_products)
+        prodct_view.forEach(view => {
+            const product = all_products.find(product => product.id == view.product_id)
+            view.product_name = product.product_name
+        })
+
+        res.status(200).json({user_prod_view: prodct_view})
+    } catch(error) {
+        res.status(500).json({Error: error})
+    }
+}
+
 async function verifyBroker(req, res){
     const { broker_code} = req.body;
     const { BROKER_SECRET } = process.env;
@@ -119,5 +145,6 @@ module.exports = {
     getAllUsers,
     deleteUser,
     getUser,
-    verifyBroker
+    verifyBroker,
+    getUserProductView
 }

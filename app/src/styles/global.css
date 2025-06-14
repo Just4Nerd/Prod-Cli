@@ -29,6 +29,11 @@ body {
 .box-item {
     min-width: 40vw;
     min-height: auto;
+    cursor: auto !important;
+}
+
+.box-name {
+    cursor: pointer;
 }
 
 .right-btn {

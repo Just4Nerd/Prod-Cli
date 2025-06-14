@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {verifyClientToken, verifyBrokerToken} = require('../Middleware/authMiddleware')
-const {createUser, loginUser, updateUser, getAllUsers, deleteUser, getUser, verifyBroker} = require('./userController')
+const {createUser, loginUser, updateUser, getAllUsers, deleteUser, getUser, verifyBroker, getUserProductView} = require('./userController')
 const {validateCreateUser, validateLoginUser, validateUpdateUser, validateBrokerCode} = require('../Middleware/userMiddleware')
 const {validateId} = require('../Middleware/generalMiddleware')
 
@@ -11,6 +11,7 @@ router.post('/:id/update', [verifyBrokerToken, validateUpdateUser], updateUser)
 router.post('/verifybroker', [verifyBrokerToken, validateBrokerCode], verifyBroker)
 router.get('/getAll', verifyBrokerToken, getAllUsers)
 router.get('/:id/', [verifyBrokerToken, validateId], getUser)
+router.get('/:id/productview', [verifyBrokerToken, validateId], getUserProductView)
 router.delete('/:id/', [verifyBrokerToken, validateId], deleteUser)
 
 
