@@ -46,6 +46,7 @@ export default function ViewBox({ isParentUser, updateUserProdShow, updateUserPr
             let res = await APIDelUserProd(token, id)
             if (res.ok) {
                 updateUserProd(-1, parentId, itemId)
+                updateUserProdShow(false, false, false, parentId, itemId)
             } else {
                 updateError('Error: something went wrong')
             }

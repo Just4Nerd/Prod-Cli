@@ -5,7 +5,7 @@ const {createUser, loginUser, updateUser, getAllUsers, deleteUser, getUser, veri
 const {validateCreateUser, validateLoginUser, validateUpdateUser, validateBrokerCode} = require('../Middleware/userMiddleware')
 const {validateId} = require('../Middleware/generalMiddleware')
 
-router.post('/register', validateCreateUser, createUser),
+router.post('/register', validateCreateUser, createUser)
 router.post('/login', validateLoginUser, loginUser)
 router.post('/:id/update', [verifyBrokerToken, validateUpdateUser], updateUser)
 router.post('/verifybroker', [verifyBrokerToken, validateBrokerCode], verifyBroker)

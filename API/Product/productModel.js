@@ -63,12 +63,32 @@ function getFeatures(product_id) {
     });
 }
 
+function getAllFeatures() {
+    return new Promise((resolve, reject) => {
+        pool.getConnection( function(err, connection) {
+            if (err) {
+                reject(err)
+            } else {
+                sql = 'SELECT * FROM prodcli.product_features;'
+                connection.execute(sql, [], (error, results) => {
+                    if (error) {
+                        console.error(error)
+                        reject(error)
+                    } else {
+                        resolve(results)
+                    }
+                });
+                connection.release();
+            }
+        })
+    });
+}
+
 
 function createProduct(name, description, category_id, price) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
-                console.log("error")
                 reject(err)
             } else {
                 sql = 'INSERT INTO prodcli.products (`name`, `description`, `category_id`, `price`) VALUES (?, ?, ?, ?)'
@@ -93,7 +113,6 @@ function updateProduct(product_id, name, description, category_id, price) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
-                console.log("error")
                 reject(err)
             } else {
                 const fields = [];
@@ -147,7 +166,6 @@ function deleteProduct(product_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
-                console.log("error")
                 reject(err)
             } else {
                 connection.execute('DELETE FROM prodcli.product_features WHERE product_id = ?', [product_id], (error) => {
@@ -230,5 +248,6 @@ module.exports = {
     addFeature,
     deleteFeatures,
     getProduct,
-    getFeatures
+    getFeatures,
+    getAllFeatures
 }
