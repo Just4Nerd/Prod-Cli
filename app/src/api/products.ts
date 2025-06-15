@@ -38,6 +38,16 @@ export async function APIUpdateProduct(token, product_id, body: Record<string, a
     return res;
 }
 
+export async function APIGetProductUserView(token: string, product_id : number) {
+    const res = await fetch(`http://localhost:8000/product/${product_id}/productview`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json', token: token }
+    });
+
+    return res;
+}
+
+
 export async function APIAddFeatures(token: string, product_id: number, features: string[]) {
     const res = await fetch(`http://localhost:8000/product/${product_id}/feature/add`, {
         method: 'POST',

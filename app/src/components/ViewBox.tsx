@@ -6,20 +6,21 @@ import { APIDelUser } from '@/api/users';
 import { APICreateUserProd, APIDelUserProd, APIUpdateUserProd } from '@/api/userProd';
 
 type ViewUserBoxProps = {
+    isParentUser: boolean;
     id: number;
     token: string;
-    userId: number;
-    productId: number;
-    productName: string;
+    parentId: number;
+    itemId: number;
+    title: string;
     showDescription: boolean;
     showPrice: boolean;
     showFeatures: boolean;
     updateError: (string) => void;
-    updateUserProd: (newId: number, userId: number, productId: number) => void;
-    updateUserProdShow: (new_description: boolean, new_price: boolean, new_features: boolean, userId: number, productionId: number) => void;
+    updateUserProd: (newId: number, parentId: number, itemId: number) => void;
+    updateUserProdShow: (new_description: boolean, new_price: boolean, new_features: boolean, parentId: number, productionId: number) => void;
 }; 
 
-export default function ViewUserBox({ updateUserProdShow, updateUserProd, updateError, id, token, userId, productId, productName, showDescription, showPrice, showFeatures }: ViewUserBoxProps){
+export default function ViewBox({ isParentUser, updateUserProdShow, updateUserProd, updateError, id, token, parentId, itemId, title, showDescription, showPrice, showFeatures }: ViewUserBoxProps){
     const router = useRouter();
     const [isDescriptionChecked, setDescription] = useState(false)
     const [isPriceChecked, setPrice] = useState(false)
@@ -27,19 +28,24 @@ export default function ViewUserBox({ updateUserProdShow, updateUserProd, update
 
     async function onSeeViewChange(){
         if (id == -1) {
+            let res;
             // Create New User-Product entry
-            let res = await APICreateUserProd(token, userId, productId, false, false, false)
+            if (isParentUser) {
+                res = await APICreateUserProd(token, parentId, itemId, false, false, false)
+            } else {
+                res = await APICreateUserProd(token, itemId, parentId, false, false, false)
+            }
             if (res.ok) {
                 let data = await res.json()
                 let newId = data.id
-                updateUserProd(newId, userId, productId)
+                updateUserProd(newId, parentId, itemId)
             } else {
                 updateError('Error: something went wrong')
             }
         } else {
             let res = await APIDelUserProd(token, id)
             if (res.ok) {
-                updateUserProd(-1, userId, productId)
+                updateUserProd(-1, parentId, itemId)
             } else {
                 updateError('Error: something went wrong')
             }
@@ -47,8 +53,6 @@ export default function ViewUserBox({ updateUserProdShow, updateUserProd, update
     }
 
     async function onShowChange(type){
-        console.log(type)
-        console.log(showDescription, showPrice, showFeatures)
         let tempDescription = Boolean(showDescription)
         let tempPrice = Boolean(showPrice)
         let tempFeatures = Boolean(showFeatures)
@@ -65,7 +69,7 @@ export default function ViewUserBox({ updateUserProdShow, updateUserProd, update
         
         let res = await APIUpdateUserProd(token, id, tempDescription, tempPrice, tempFeatures)
         if (res.ok) {
-            updateUserProdShow(tempDescription, tempPrice, tempFeatures, userId, productId)
+            updateUserProdShow(tempDescription, tempPrice, tempFeatures, parentId, itemId)
         } else {
             updateError('Error: something went wrong')
         }
@@ -79,7 +83,7 @@ export default function ViewUserBox({ updateUserProdShow, updateUserProd, update
                         <h5>Product Name:</h5>
                     </div>
                     <div className="field-right">
-                        <h5>{productName}</h5>
+                        <h5>{title}</h5>
                     </div>
                 </div>
                 <hr/>
@@ -88,7 +92,7 @@ export default function ViewUserBox({ updateUserProdShow, updateUserProd, update
                         <p>Product ID:</p>
                     </div>
                     <div className="field-right">
-                        <p>{productId}</p>
+                        <p>{itemId}</p>
                     </div>
                 </div>
                 <hr></hr>

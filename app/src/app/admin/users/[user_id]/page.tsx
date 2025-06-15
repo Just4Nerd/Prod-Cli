@@ -4,7 +4,8 @@ import { APIGetUser, APIGetUserProductView } from '@/api/users';
 import NewProductForm from '@/components/NewProductForm';
 import NewUserForm from '@/components/NewUserForm';
 import UserBox from '@/components/UserBox';
-import ViewUserBox from '@/components/ViewUserBox';
+import ViewBox from '@/components/ViewBox';
+import ViewUserBox from '@/components/ViewBox';
 import { jwtDecode } from 'jwt-decode';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -29,7 +30,6 @@ export default function EditUser() {
             const decoded = jwtDecode(token);
             const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
             if (decoded.exp && decoded.exp < currentTime) {
-                console.log('Token expired');
                 localStorage.removeItem('token');
                 router.push('/');
                 return;
@@ -41,7 +41,6 @@ export default function EditUser() {
         } catch(error) {
             router.push('/');
         }
-        console.log('setting', token)
         // Fetch all Categories
         setToken(token)
         getUserData(token)
@@ -152,7 +151,7 @@ export default function EditUser() {
                             <div></div>
                         }
                         {userProductView.map((view, idx) => ( 
-                            <ViewUserBox updateUserProdShow={updateShows} updateUserProd={updateViewId} updateError = {setError}key={idx} id={view.id} token={token} userId={view.user_id} productId={view.product_id} productName={view.product_name} showDescription={view.show_description} showPrice={view.show_price} showFeatures={view.show_features} />
+                            <ViewBox isParentUser={true} updateUserProdShow={updateShows} updateUserProd={updateViewId} updateError = {setError}key={idx} id={view.id} token={token} parentId={view.user_id} itemId={view.product_id} title={view.product_name} showDescription={view.show_description} showPrice={view.show_price} showFeatures={view.show_features} />
                         ))}
                     </div>
                 </div>

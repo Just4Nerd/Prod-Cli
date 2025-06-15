@@ -1,4 +1,6 @@
 const model = require('./productModel')
+const user_model = require('../User/userModel')
+const user_prod_model = require('../UserProductVisibility/userProductModel')
 
 async function getAllProducts(req, res){
     try {
@@ -80,6 +82,33 @@ async function deleteFeatures(req, res) {
     }
 }
 
+async function getProductUserView(req, res){
+    try {
+        const {id} = req.params
+        const user_view = await user_prod_model.getUserProdByProdId(id)
+        const all_users = await user_model.getUsers()
+        const all_products = await model.getAllProducts()
+        if (all_products.some(product => product.id == id)){
+        
+        // add all users to the user view so that they can be enabled in the future
+            all_users.forEach(user => {
+                if (!user_view.some(view => view.user_id == user.id)) {
+                    user_view.push({id: -1, user_id: user.id, product_id: id, show_description: 0, show_price: 0, show_features: 0})
+                }
+            })
+            user_view.forEach(view => {
+                const user = all_users.find(user => user.id == view.user_id)
+                view.login = user.login
+            })
+            res.status(200).json({prod_user_view: user_view})
+        } else {
+            res.status(500).json({Error: 'Product doesnt exist.'})
+        }
+    } catch(error) {
+        res.status(500).json({Error: error})
+    }
+}
+
 module.exports = {
     getAllProducts,
     createProduct,
@@ -88,5 +117,6 @@ module.exports = {
     addFeature,
     deleteFeatures,
     getProduct, 
-    getFeatures
+    getFeatures,
+    getProductUserView
 }

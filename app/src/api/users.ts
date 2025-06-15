@@ -44,8 +44,6 @@ export async function APICreateUser(token: string, login: string, password: stri
 }
 
 export async function APIUpdateUser(token, user_id, body: Record<string, any>) {
-    console.log('body', body)
-
     const res = await fetch(`http://localhost:8000/user/${user_id}/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', token: token },
