@@ -18,8 +18,14 @@ export default function LoginForm({ setError }: LoginFormProps){
             let res = await APILogin(login, password)
             if (res.ok) {
                 const data = await res.json();
+                let role = data.role
                 localStorage.setItem('token', data['token']);
-                router.push('/admin');
+                if (role == 1) {
+                    router.push('/home');
+                } else {
+                    router.push('/admin');
+                }
+
             } else {
                 console.log(res)
                 setError("Failed to Login");

@@ -38,7 +38,7 @@ async function loginUser(req, res){
             password_match = await bcrypt.compare(password, result[0]['password_hash'])
             if (password_match) {
                 token = createToken(result[0]['id'], result[0]['login'], result[0]['role_id'])
-                res.status(200).json({ token: token });
+                res.status(200).json({ token: token, role: result[0]['role_id'] });
 
             } else {
                 res.status(400).json({message: 'Failed to login. Invalid credentials.'})

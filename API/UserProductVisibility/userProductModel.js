@@ -84,6 +84,27 @@ function getUserProdByProdId(prod_id) {
     });
 }
 
+function getUserProd(user_id, prod_id) {
+    return new Promise((resolve, reject) => {
+        pool.getConnection( function(err, connection) {
+            if (err) {
+                reject(err)
+            } else {
+                sql = 'Select * FROM prodcli.user_product_visibility WHERE user_id = ? AND product_id = ?'
+                connection.execute(sql, [user_id, prod_id], (error, results) => {
+                    if (error) {
+                        console.error(error)
+                        reject(error)
+                    } else {
+                        resolve(results)
+                    }
+                });
+                connection.release();
+            }
+        })
+    });
+}
+
 function updateUserProd(user_prod_id, show_description, show_price, show_features) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -114,5 +135,6 @@ module.exports = {
     deleteUserProd,
     updateUserProd,
     getUserProdByUserId,
-    getUserProdByProdId
+    getUserProdByProdId,
+    getUserProd
 }
