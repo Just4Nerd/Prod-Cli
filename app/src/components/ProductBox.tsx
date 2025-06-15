@@ -17,16 +17,10 @@ type ProductBoxProps = {
 }; 
 
 export default function NavBox({ updateProducts, token, id, name, category, description, layout_type, price}: ProductBoxProps){
-    // const nameRef = useRef<HTMLInputElement>(null);
-    // const categoryRef = useRef<HTMLInputElement>(null);
-    // const descriptionRef = useRef<HTMLInputElement>(null);
-    // const layout_typeRef = useRef<HTMLInputElement>(null);
-    // const priceRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
     function onEditClick(event: React.MouseEvent<HTMLAnchorElement>){
         event.preventDefault()
-        console.log(id, name, category)
         router.push('/admin/products/' + id + '/edit');
     }
 
@@ -36,12 +30,6 @@ export default function NavBox({ updateProducts, token, id, name, category, desc
 
         if (res.ok) {
             updateProducts(product_id)
-            // updateProducts(prevProducts => {
-            //     const index = prevProducts.findIndex(p => p.id === product_id);
-            //     if (index === -1) return prevProducts; // no match, return original
-            //     // Create a new array without the item at index
-            //     return [...prevProducts.slice(0, index), ...prevProducts.slice(index + 1)];
-            // });
         } else {
             console.log("error")
         }

@@ -107,7 +107,6 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
         if (err) {
             setError(err)
         } else{
-            console.log("valid")
             let res = await APICreateUser(token, userLogin, userPassword)
             if (res.ok) {
                 useRouter('/admin/users')
@@ -127,7 +126,6 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
             let res = await APIVerifyBrokerCode(token, brokerCode)
             if (res.ok) {
                 setBrokerCorrect(true)
-                console.log('yay')
             } else {
                 let error = await res.json()
                 if (error.error) {
@@ -164,7 +162,6 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
                     changeSuccessAfterDelay()
                 } else {
                     let data = await resLogin.json()
-                    console.log(data)
                     if (data.Error.sqlMessage.includes("sers.login_UNIQUE")) {
                         setError('Error: User Login already exists.')
                     } else {

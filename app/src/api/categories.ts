@@ -6,3 +6,23 @@ export async function APIGetAllCategories(token) {
 
     return res;
 }
+
+export async function APIUpdateCategory(token, id, name, layout_type: string, ) {
+    const res = await fetch(`http://localhost:8000/category/${id}/update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', token: token },
+        body: JSON.stringify({name, layout_type}),
+    });
+
+    return res;
+}
+
+export async function APICreateCategory(token, name, layout_type: string, ) {
+    const res = await fetch(`http://localhost:8000/category/create`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', token: token },
+        body: JSON.stringify({name, layout_type}),
+    });
+
+    return res;
+}

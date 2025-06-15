@@ -22,7 +22,6 @@ export default function EditProduct() {
             const decoded = jwtDecode(token);
             const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
             if (decoded.exp && decoded.exp < currentTime) {
-                console.log('Token expired');
                 localStorage.removeItem('token');
                 router.push('/');
                 return;
