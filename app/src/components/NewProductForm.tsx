@@ -32,7 +32,6 @@ export default function NewProductForm({categories, token, useRouter, editingPro
     // let isEdit = false;
 
     useEffect(() =>{
-        console.log('111', token)
         if (editingProductId != null) {
             // isEdit = true;
             getProductData()
@@ -41,7 +40,6 @@ export default function NewProductForm({categories, token, useRouter, editingPro
 
     async function getProductData() {
         let res = await APIGetProduct(token, editingProductId)
-        console.log(token)
         if (res.ok){
             let data = await res.json()
             data = data.product
@@ -72,11 +70,9 @@ export default function NewProductForm({categories, token, useRouter, editingPro
 
     async function getFeatures() {
         let res = await APIGetFeatures(token, editingProductId)
-        console.log(res)
         if (res.ok) {
             let feature_data = await res.json()
             feature_data = feature_data.features
-            console.log(feature_data) 
             setFeature(feature_data)
             setPrevFeatures(feature_data)
         } else {
@@ -131,14 +127,11 @@ export default function NewProductForm({categories, token, useRouter, editingPro
             if (result.price) updateProductBody.price = result.price
             if (result.description) updateProductBody.description = result.description
             if (result.category_id) updateProductBody.category_id = result.category_id
-            console.log("body", updateProductBody)
 
             let updateSuccess = true;
             let deleteSuccess = true;
             let addSuccess = true;
-            console.log("updateProductBody")
         if (updateProductBody && Object.keys(updateProductBody).length > 0) {
-            console.log("updateProductBody", updateProductBody)
             let resUpdate = await APIUpdateProduct(token, editingProductId, updateProductBody)
             if (!resUpdate.ok) {
                 updateSuccess = false
@@ -148,12 +141,8 @@ export default function NewProductForm({categories, token, useRouter, editingPro
 
             let toDelete = result.toDelete.map(feature => Number(feature.id))
             let newFeatures = result.newFeatures
-
-            console.log("toDelete", toDelete);
-            console.log("newFeatures", newFeatures)
             
             if (toDelete.length > 0) {
-                console.log("doing delete")
                 let resDel = await APIDelFeatures(token, toDelete)
                 if (!resDel.ok) {
                     deleteSuccess = false
@@ -162,7 +151,6 @@ export default function NewProductForm({categories, token, useRouter, editingPro
             }
 
             if (newFeatures.length > 0) {
-                console.log("doing adding")
                 let resAdd = await APIAddFeatures(token, editingProductId, newFeatures)
                 if (!resAdd.ok) {
                     addSuccess = false
@@ -202,7 +190,6 @@ export default function NewProductForm({categories, token, useRouter, editingPro
                 featuresCopy.splice(index, 1); // Remove one matched object
                 return false; // Skip this element — matched
             } else {
-                console.log("delete", el.id); // Log ID of the kept (unmatched) element
                 return true; // Keep this element — not matched
             }
         });
@@ -271,7 +258,6 @@ export default function NewProductForm({categories, token, useRouter, editingPro
 
     function validateNewForm() {
         let error = ""
-        console.log(features)
         features.forEach((feature) => {
             if (feature.content == "" || feature.content == "<p></p>") {
                 error = "Failed to Submit: empty Features"
