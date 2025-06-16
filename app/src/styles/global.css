@@ -63,3 +63,9 @@ body {
     left: 0;
     cursor: pointer;
 }
+
+.logout-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+}

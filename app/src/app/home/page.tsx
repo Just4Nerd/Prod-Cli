@@ -56,6 +56,7 @@ export default function Admin(){
         
     return(
         <div className="d-inline-block h-100 w-100">
+            <button type="button" className="btn btn-warning logout-btn m-3" onClick={() => {localStorage.removeItem('token');router.push('/');}}>Logout</button>
             <div className="page-header d-flex justify-content-center w-100">
                 <h1 className="page-title">Products</h1>
             </div>       

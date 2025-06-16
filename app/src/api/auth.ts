@@ -7,3 +7,13 @@ export async function APILogin(login: string, password: string) {
 
     return res;
 }
+
+export async function APIRegister(login: string, password: string) {
+    const res = await fetch('http://localhost:8000/user/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ login, password }),
+    });
+
+    return res;
+}

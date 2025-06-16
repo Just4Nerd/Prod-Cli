@@ -9,7 +9,8 @@ async function createUser(req, res) {
         const password_hash = await hashPassword(password)
         role_id = 1
         const result = await model.createUser(login, password_hash, role_id);
-        res.status(201).json({ message: 'User created successfully' });
+        const token = createToken(result.insertId, login, role_id)
+        res.status(201).json({ message: 'User created successfully', token: token});
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err });
