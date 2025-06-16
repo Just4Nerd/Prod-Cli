@@ -1,4 +1,4 @@
-This is a project has 2 parts:
+This project has 2 parts:
 - Broker which creates and manages users, creates and manages products and it's categories, as well as which products which users see.
 - Clients who can create an account and see the products which are enabled for them.
 Products have price, description and feature fields which can also be enabled/disabled for specific users to see by Brokers.
