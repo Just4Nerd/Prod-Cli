@@ -2,17 +2,17 @@
 import { useEffect, useState } from 'react';
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from 'next/navigation';
-import {APIGetAllProducts} from '@/api/products'
-import ProductBox from '@/components/ProductBox'
 import { APIGetClientProducts } from '@/api/client';
 import ClientProductBox from '@/components/ClientProductBox';
 
-export default function Admin(){
+// Home page where client sees all products visible to them
+export default function Home(){
     const router = useRouter();
-    const [products,  setProducts] = useState<any[]>([]);
+    const [products,  setProducts] = useState<any[]>([]); // object to store products
     const [token, setToken] = useState('')
 
     useEffect(() =>{
+        // Check if localStorage has a valid client toke
         const token = localStorage.getItem('token');
         if (!token) {
             router.push('/');
@@ -34,11 +34,12 @@ export default function Admin(){
             router.push('/');
         }
 
-        // Fetch all Products
+        // Fetch all products to display
         getProducts(token)
         setToken(token)
     }, [])
 
+    // Function that gets all products available to user and sorts them based on ID
     async function getProducts(token){
         let res = await APIGetClientProducts(token)
         if (res.ok) {
@@ -50,6 +51,7 @@ export default function Admin(){
         }
     }
 
+    // Function that gets passed to children components that uses router to redirect to a clicked product
     function onBoxClick(id) {
         router.push('/home/'+id)
     }
@@ -63,6 +65,7 @@ export default function Admin(){
             <div className="page-content w-100 pt-5">
                 <div className="container">
                     <div className="box-list">
+                        {/* Each ClientProductBox is a component that renders one product in the list */}
                         {products.map((product, idx) => (
                             <ClientProductBox onBoxClick={onBoxClick} key={idx} id={product.id} token={token} name={product.name} category={product.category}/>
                         ))}

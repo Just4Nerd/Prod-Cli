@@ -1,15 +1,15 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { APIGetAllCategories } from '@/api/categories';
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from 'next/navigation';
 import NewUserForm from '@/components/NewUserForm';
 
+// Page for the creation of a new user
 export default function New(){
     const router = useRouter();
     const [token, setToken] = useState('')
 
+    // Validate token and role to be broker
     useEffect(() =>{
         let token = localStorage.getItem('token');
         if (!token) {
@@ -31,7 +31,6 @@ export default function New(){
         } catch(error) {
             router.push('/');
         }
-        // Fetch all Categories
         setToken(token)
     }, [])
 
@@ -41,6 +40,9 @@ export default function New(){
                 <button type="button" onClick={() => router.push('/admin/users')}className="btn btn-secondary">Back</button>
             </div>
             <div className="d-flex w-100 h-100 overflow-auto justify-content-center">
+                {/* Render the New User Form component */}
+                {/* Editing user ID is used to indicate if it is intended for editing or creation of new user */}
+                {/* It is null when we are creating a new user */}
                 { token &&
                     <NewUserForm editingUserId={null} token={token} useRouter={(e) => router.push(e)}/>
                 }

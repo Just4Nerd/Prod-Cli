@@ -1,12 +1,12 @@
 'use client';
-import { useRef } from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { APIDelUser } from '@/api/users';
 import { APICreateUserProd, APIDelUserProd, APIUpdateUserProd } from '@/api/userProd';
 
+// As this component is called from both users and products parentId is user_id in users and product_id in products
+// Similarly, itemId is the Id of a specific view. In /users it is product_id and in /products it is user_id
 type ViewUserBoxProps = {
-    isParentUser: boolean;
+    isParentUser: boolean; // This is used to determine if the parent component is user or a product page
     id: number;
     token: string;
     parentId: number;
@@ -20,12 +20,14 @@ type ViewUserBoxProps = {
     updateUserProdShow: (new_description: boolean, new_price: boolean, new_features: boolean, parentId: number, productionId: number) => void;
 }; 
 
+// This component is used in '/admin/users/:id' and '/admin/products/:id'
+// To display user-product pairs that exist and dont yet exist for the broker to manage
 export default function ViewBox({ isParentUser, updateUserProdShow, updateUserProd, updateError, id, token, parentId, itemId, title, showDescription, showPrice, showFeatures }: ViewUserBoxProps){
     const router = useRouter();
-    const [isDescriptionChecked, setDescription] = useState(false)
-    const [isPriceChecked, setPrice] = useState(false)
-    const [isFeaturesChecked, setFeatures] = useState(false)
 
+    // This function changes if the users sees the product at all or not. 
+    // If the id was -1, change to the new id that gets returned from the server.
+    // If it was not -1, delete the user-product pair and make it -1
     async function onSeeViewChange(){
         if (id == -1) {
             let res;
@@ -46,13 +48,16 @@ export default function ViewBox({ isParentUser, updateUserProdShow, updateUserPr
             let res = await APIDelUserProd(token, id)
             if (res.ok) {
                 updateUserProd(-1, parentId, itemId)
+                // When creating a new user-product entry, the visibilities are always false
                 updateUserProdShow(false, false, false, parentId, itemId)
             } else {
                 updateError('Error: something went wrong')
             }
         }
     }
-
+    // This function changes the visibility of specific fields when pressed
+    // As it is called when a checkbox is clicked, only 1 field changes at a time
+    // However all the fields are still sent regardless
     async function onShowChange(type){
         let tempDescription = Boolean(showDescription)
         let tempPrice = Boolean(showPrice)
@@ -116,6 +121,7 @@ export default function ViewBox({ isParentUser, updateUserProdShow, updateUserPr
                             </div>
                         </div>
                     </div>
+                    {/* Render description, price and feature visibility option only if client sees the product itself (id != -1) */}
                     { id != -1?
                     <div className="row">
                         <div className="col-sm">

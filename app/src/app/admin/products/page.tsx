@@ -5,11 +5,13 @@ import { useRouter } from 'next/navigation';
 import {APIGetAllProducts} from '@/api/products'
 import ProductBox from '@/components/ProductBox'
 
-export default function Admin(){
+// This page is used to display all products for broker to see
+export default function Products(){
     const router = useRouter();
-    const [products,  setProducts] = useState<any[]>([]);
+    const [products,  setProducts] = useState<any[]>([]); //object that stores all product data
     const [token, setToken] = useState('')
 
+    // Validate token and verify that the role is of broker
     useEffect(() =>{
         const token = localStorage.getItem('token');
         if (!token) {
@@ -32,11 +34,12 @@ export default function Admin(){
             router.push('/');
         }
 
-        // Fetch all Products
+        // Fetch all products to display
         getProducts(token)
         setToken(token)
     }, [])
 
+    //  Function that gets and sets all products. Additionally it sorts products based on their id
     async function getProducts(token){
         let res = await APIGetAllProducts(token)
         if (res.ok) {
@@ -48,12 +51,14 @@ export default function Admin(){
         }
     }
 
+    // Function that redirects to /admin/products/new when clicked
     function onAddNewClick(event: React.MouseEvent<HTMLButtonElement>) {
         event.preventDefault()
         router.push('/admin/products/new');
     }
 
-    function updateProduct(id) {
+    // funnction that deletes the product from the state object when it got deleted on the server
+    function deleteProduct(id) {
         setProducts(prev => prev.filter(product => product.id !== id));
     }
         
@@ -72,8 +77,9 @@ export default function Admin(){
             <div className="page-content w-100 pt-5">
                 <div className="container">
                     <div className="box-list">
+                        {/* Render all products dynamicaly from products object */}
                         {products.map((product, idx) => (
-                            <ProductBox updateProducts={updateProduct} token={token} id = {product.id} key={idx} category_id={product.category_id} name={product.product_name} description={product.description} price={product.price.toFixed(2)} category={product.category_name} layout_type={product.layout_type}/>
+                            <ProductBox deleteProduct={deleteProduct} token={token} id = {product.id} key={idx} category_id={product.category_id} name={product.product_name} description={product.description} price={product.price.toFixed(2)} category={product.category_name} layout_type={product.layout_type}/>
                         ))}
                     </div>
                 </div>

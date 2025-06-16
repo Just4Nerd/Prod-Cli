@@ -2,18 +2,19 @@
 import { APIGetAllCategories } from '@/api/categories';
 import CategoryBox from '@/components/CategoryBox';
 import NewCategory from '@/components/NewCategory';
-import NewProductForm from '@/components/NewProductForm';
 import { jwtDecode } from 'jwt-decode';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+// This page is used to display all categories and facilitate new category and edit category functionality
 export default function Categories() {
     const router = useRouter();
     const [token, setToken] = useState('')
-    const [categories,  setCategories] = useState([]);
-    const [error, setError] = useState('')
-    const [isNewCategory, setNewCategory] = useState(false)
+    const [categories,  setCategories] = useState([]); // Store all categories
+    const [error, setError] = useState('') // This is used to display error text if it is present
+    const [isNewCategory, setNewCategory] = useState(false) // This is used to indicate if add new has been pressed the form should be displayed
 
+    // Verify token and role to be broker
     useEffect(() =>{
         let token = localStorage.getItem('token');
         if (!token) {
@@ -35,11 +36,12 @@ export default function Categories() {
         } catch(error) {
             router.push('/');
         }
-        // Fetch all Categories
+        // Fetch all categories
         getCategories(token)
         setToken(token)
     }, [])
 
+    // Function that is used to dynamically update the categories state after edit was successful
     function updateCategory(id, name, layout) {
         setCategories(prev => prev.map(category =>
             category.id === id
@@ -49,6 +51,7 @@ export default function Categories() {
         );
     }
 
+    // This function is used to create a new category in the state object when the API call was successful
     function createCategory(newId, newName, newLayout) {
         categories.push({id: newId, name: newName, layout_type: newLayout})
     }
@@ -68,6 +71,7 @@ export default function Categories() {
             <div className="page-content w-100 pt-5">
                 <div className="container">
                     <div className="box-list">
+                        {/* Field to dsiplay an error */}
                         {error? 
                             <div className="form-group row d-flex justify-content-center error-box bg-danger my-4">
                                 {error}
@@ -75,12 +79,14 @@ export default function Categories() {
                             :
                             <div></div>
                         }
+                        {/* If the new category button was pressed display this form */}
                         {isNewCategory?
                             <NewCategory updateIsNew={setNewCategory} createCategory={createCategory} token={token} updateError={setError}/>
                             :
                             <div></div>
                         }
                         {token &&
+                        // Create category boxes for each category in the state object
                             categories.map((category, idx) => (
                                 <CategoryBox key={idx} updateCategory={updateCategory} updateError={setError} id={category.id} name={category.name} token={token} layout={category.layout_type}/>
                             ))

@@ -1,6 +1,4 @@
 'use client';
-import { useRef } from 'react';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { APIDelProduct } from '@/api/products';
 
@@ -13,23 +11,26 @@ type ProductBoxProps = {
     layout_type: string;
     price: string;
     token: string;
-    updateProducts: (number) => void;
+    deleteProduct: (number) => void;
 }; 
 
-export default function NavBox({ updateProducts, token, id, name, category, description, layout_type, price}: ProductBoxProps){
+// This component is used to show one product in /admin/products 
+export default function ProductBox({ deleteProduct, token, id, name, category, description, layout_type, price}: ProductBoxProps){
     const router = useRouter();
 
+    // Function that redirects to a specific product edit page when clicked
     function onEditClick(event: React.MouseEvent<HTMLAnchorElement>){
         event.preventDefault()
         router.push('/admin/products/' + id + '/edit');
     }
 
+    // Function that makes a product delete call and removes the product from parent object on success
     async function onDelClick(event: React.MouseEvent<HTMLAnchorElement>, product_id: number) {
         event.preventDefault()
         let res = await APIDelProduct(token, product_id)
 
         if (res.ok) {
-            updateProducts(product_id)
+            deleteProduct(product_id)
         } else {
             console.log("error")
         }
@@ -73,6 +74,7 @@ export default function NavBox({ updateProducts, token, id, name, category, desc
                     </div>
                 </div>
                 <hr/>
+                {/* Edit and Delete buttons */}
                 <div>
                     <div className="row">
                         <div className="col-sm">

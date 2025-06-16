@@ -1,28 +1,29 @@
 'use client';
-import { APIGetAllCategories } from '@/api/categories';
 import { APIGetProduct, APIGetProductUserView } from '@/api/products';
-import { APIGetUser, APIGetUserProductView } from '@/api/users';
 import NewProductForm from '@/components/NewProductForm';
 import NewUserForm from '@/components/NewUserForm';
 import UserBox from '@/components/UserBox';
 import ViewBox from '@/components/ViewBox';
-import ViewUserBox from '@/components/ViewBox';
 import { jwtDecode } from 'jwt-decode';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+// This page is used for broker to manage user-product entries for a specific product
 export default function ProductView() {
+    // Get product id from url
     const params = useParams();
     const productId = Number(params.product_id);
     const router = useRouter();
     const [token, setToken] = useState('')
+    // States used for product information
     const [productName, setName] = useState('')
     const [productDescription, setDescription] = useState('')
     const [productPrice, setPrice] = useState('')
     const [productCategory, setCategory] = useState('')
     const [productUserView, setView] = useState([])
-    const [error, setError] = useState('');
+    const [error, setError] = useState(''); // State is used to display an error if it contains text
 
+    // Validate token and verify if the role is broker
     useEffect(() =>{
         let token = localStorage.getItem('token');
         if (!token) {
@@ -44,12 +45,15 @@ export default function ProductView() {
         } catch(error) {
             router.push('/');
         }
-        // Fetch all Categories
+        // Fetch Product data and all user-product entries.
         setToken(token)
         getProductData(token)
         getProductUserView(token)
     }, [token])
 
+    // This function gets all user-product entries;
+    // For users that currently see the product the id is set to >=0;
+    // For users that don't see it the id is set to -1
     async function getProductUserView(token) {
         let res = await APIGetProductUserView(token, productId)
         if (res.ok) {
@@ -60,14 +64,13 @@ export default function ProductView() {
         }
     }
 
+    // This function gets currect product data
     async function getProductData(token) {
         let res = await APIGetProduct(token, productId)
         if (res.ok){
             let data = await res.json()
             data = data.product
             if (data.length > 0) {
-                // Set values to an existing product values if we are editing a product
-                // Set previous and current product name values
                 setName(data[0].product_name)
                 setCategory(data[0].category_name)
                 setDescription(data[0].description)
@@ -80,7 +83,8 @@ export default function ProductView() {
             router.push('/admin/products')
         }
     }
-
+    // Function to update the ID of a user-product entry. If it is -1, the user doesn't see the product. If it set to anything else, they see it.
+    // This updates only the js object to dynamically render changes. If this is called, the change has already been applied on backend
     function updateViewId(newId, productId, userId) {
         setView(prev => prev.map(view =>
             view.user_id === userId && view.product_id === productId
@@ -90,6 +94,8 @@ export default function ProductView() {
         );
     }
 
+    // Function to update user-product entry with a specific id to show/dont show price, features or description
+    // This updates only the js object to dynamically render changes. If this is called, the change has already been applied on backend
     function updateShows(new_description, new_price, new_features, productId, userId) {
         setView(prev => prev.map(view =>
             view.user_id === userId && view.product_id === productId
@@ -170,6 +176,7 @@ export default function ProductView() {
                             :
                             <div></div>
                         }
+                        {/* Dynamically render user-product boxes. Here each box will be for a user. */}
                         {productUserView.map((view, idx) => ( 
                             <ViewBox isParentUser={false} updateUserProdShow={updateShows} updateUserProd={updateViewId} updateError = {setError} key={idx} id={view.id} token={token} parentId={view.product_id} itemId={view.user_id} title={view.login} showDescription={view.show_description} showPrice={view.show_price} showFeatures={view.show_features} />
                         )) }

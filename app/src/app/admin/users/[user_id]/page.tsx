@@ -10,16 +10,19 @@ import { jwtDecode } from 'jwt-decode';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export default function EditUser() {
+// Page to show and manage user-product logic
+export default function ShowUser() {
     const params = useParams();
+    // Get user ID from url
     const userId = Number(params.user_id);
     const router = useRouter();
     const [token, setToken] = useState('')
     const [userLogin, setUserLogin] = useState('')
     const [userRole, setUserRole] = useState('')
-    const [userProductView, setView] = useState([])
-    const [error, setError] = useState('');
+    const [userProductView, setView] = useState([]) // Object to store all user-prodcut entries
+    const [error, setError] = useState(''); // Field to display error text if it contains any
 
+    // Validate token and user role to be broker
     useEffect(() =>{
         let token = localStorage.getItem('token');
         if (!token) {
@@ -41,16 +44,18 @@ export default function EditUser() {
         } catch(error) {
             router.push('/');
         }
-        // Fetch all Categories
+        // Fetch User data and get all user-product entries
         setToken(token)
         getUserData(token)
         getUserProductView(token)
     }, [token])
 
+    // Function that get all user-product views for specific user
     async function getUserProductView(token) {
         let res = await APIGetUserProductView(token, userId)
         if (res.ok) {
             let data = await res.json()
+            // Set the object if successful
             setView(data.user_prod_view)
 
         } else {
@@ -58,14 +63,13 @@ export default function EditUser() {
         }
     }
 
+    // Function to get all user data
     async function getUserData(token) {
         let res = await APIGetUser(token, userId)
         if (res.ok){
             let data = await res.json()
             data = data.user
             if (data.length > 0) {
-                // Set values to an existing product values if we are editing a product
-                // Set previous and current product name values
                 setUserLogin(data[0].login)
                 setUserRole(data[0].role_name)
             } else {
@@ -77,6 +81,8 @@ export default function EditUser() {
         }
     }
 
+    // Function to update the ID of a user-product entry. If it is -1, the user doesn't see the product. If it set to anything else, they see it.
+    // This updates only the js object to dynamically render changes. If this is called, the change has already been applied on backend
     function updateViewId(newId, userId, productId) {
         setView(prev => prev.map(view =>
             view.user_id === userId && view.product_id === productId
@@ -86,6 +92,8 @@ export default function EditUser() {
         );
     }
 
+    // Function to update user-product entry with a specific id to show/dont show price, features or description
+    // This updates only the js object to dynamically render changes. If this is called, the change has already been applied on backend
     function updateShows(new_description, new_price, new_features, userId, productId) {
         setView(prev => prev.map(view =>
             view.user_id === userId && view.product_id === productId
@@ -150,6 +158,7 @@ export default function EditUser() {
                             :
                             <div></div>
                         }
+                        {/* Render all products the user sees or doesn't for the broker to manage their visibility */}
                         {userProductView.map((view, idx) => ( 
                             <ViewBox isParentUser={true} updateUserProdShow={updateShows} updateUserProd={updateViewId} updateError = {setError}key={idx} id={view.id} token={token} parentId={view.user_id} itemId={view.product_id} title={view.product_name} showDescription={view.show_description} showPrice={view.show_price} showFeatures={view.show_features} />
                         ))}

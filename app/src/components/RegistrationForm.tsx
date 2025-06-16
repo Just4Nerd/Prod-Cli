@@ -1,26 +1,32 @@
 'use client';
 import { useState, FormEvent, useEffect } from 'react'
-import {APILogin, APIRegister} from '@/api/auth'
+import {APIRegister} from '@/api/auth'
 
+// Props that get passed to this component
 type RegistrationFormProps = {
   setError: (message: string) => void;
   goToPage: (page: string) => void
 };
 
+// Registration component with registration form
 export default function RegistrationForm({ goToPage, setError }: RegistrationFormProps){
     const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
 
     async function Register(event: React.MouseEvent<HTMLButtonElement>) {
         event.preventDefault()
+        // Regex checks for: uppercase letter, lowercase letter, one digit, special character and be at least 8 characters long.
         const password_regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
         
+        // Validate if fields are filled and password matches the regex
         if (login && password) {
             if (password_regex.test(password)) {
                 let res = await APIRegister(login, password)
                 if (res.ok) {
                     const data = await res.json();
+                    // Store returned token in localStorage for authentication
                     localStorage.setItem('token', data['token']);
+                    // Registered user is always a client and is redirected to /home
                     goToPage('/home')
 
                 } else {

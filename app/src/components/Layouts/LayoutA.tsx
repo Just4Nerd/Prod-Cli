@@ -14,6 +14,7 @@ type LayoutAProps = {
     features: any[]
 }; 
 
+// Component for Layout_A
 export default function LayoutA({ features, price, token, id, name, category, description}: LayoutAProps){
 
     return(

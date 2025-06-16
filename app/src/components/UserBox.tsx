@@ -1,6 +1,4 @@
 'use client';
-import { useRef } from 'react';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { APIDelUser } from '@/api/users';
 
@@ -10,28 +8,27 @@ type UserBoxProps = {
     token: string;
     role_name: string;
     role_id: number;
-    updateUsers: (number) => void;
+    deleteUser: (number) => void;
 }; 
 
-export default function UserBox({ updateUsers, token, id, login, role_name, role_id}: UserBoxProps){
-    // const nameRef = useRef<HTMLInputElement>(null);
-    // const categoryRef = useRef<HTMLInputElement>(null);
-    // const descriptionRef = useRef<HTMLInputElement>(null);
-    // const layout_typeRef = useRef<HTMLInputElement>(null);
-    // const priceRef = useRef<HTMLInputElement>(null);
+// This component renders the client information for /admin/users/
+export default function UserBox({ deleteUser, token, id, login, role_name, role_id}: UserBoxProps){
     const router = useRouter();
 
+    // When edit is clicked go to the edit page of that specific client
     function onEditClick(event: React.MouseEvent<HTMLAnchorElement>){
         event.preventDefault()
         router.push('/admin/users/' + id + '/edit');
     }
 
+    // Function that executes when delete button is pressed. 
+    // It sends an API call to delete the user and if successful modifies the users object of the parent 
     async function onDelClick(event: React.MouseEvent<HTMLAnchorElement>, user_id: number) {
         event.preventDefault()
         let res = await APIDelUser(token, user_id)
 
         if (res.ok) {
-            updateUsers(user_id)
+            deleteUser(user_id)
         } else {
             console.log("error")
         }
@@ -67,6 +64,7 @@ export default function UserBox({ updateUsers, token, id, login, role_name, role
                     </div>
                 </div>
                 <hr/>
+                {/* Edit and Delete buttons */}
                 <div>
                     <div className="row">
                         <div className="col-sm">

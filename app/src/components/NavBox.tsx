@@ -4,6 +4,7 @@ type NavBoxProps = {
   goToPage: (event: React.MouseEvent<HTMLDivElement>, page: string) => void
 }; 
 
+// Admin Navigation Box component. Text and Description are passed are displayed
 export default function NavBox({ text, description, goToPage }: NavBoxProps){
     return(
         <div className="card my-2 pe-auto" onClick={(e) => goToPage(e, text)}>

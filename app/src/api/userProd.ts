@@ -1,3 +1,5 @@
+//API calls for user-product visibility; Goes to /userprod
+
 export async function APICreateUserProd(token: string, user_id: number, product_id: number, show_description: boolean, show_price: boolean, show_features: boolean) {
     const res = await fetch(`http://localhost:8000/userprod/add`, {
         method: 'POST',

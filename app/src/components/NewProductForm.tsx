@@ -1,8 +1,7 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TiptapEditor from '@/components/TiptapEditor';
 import { APICreateProduct, APIAddFeatures, APIGetProduct, APIGetFeatures, APIDelFeatures, APIUpdateProduct} from '@/api/products';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 
 type NewProductFormProps = {
     categories: any[];
@@ -11,11 +10,14 @@ type NewProductFormProps = {
     editingProductId: number;
 }; 
 
-
+// This component is in '/admin/products/new' and '/admin/products/:id/edit'
+// This component is used to render the form for creating new product and editing an existing product
+// editingProductId is used to indicate which one it is; if it is null then it is a new user
 export default function NewProductForm({categories, token, useRouter, editingProductId}: NewProductFormProps) {
     // Error is used to display an error field when it is not ''
     const [error, setError] = useState('');
 
+    // States to track current entered information
     const [productName, setProductName] = useState('')
     const [description, setDescription] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -29,8 +31,8 @@ export default function NewProductForm({categories, token, useRouter, editingPro
     const [prevPrice, setPrevPrice] = useState('');
     const [prevCategory, setPrevCategory] = useState('');
     const [prevFeatures, setPrevFeatures] = useState<any[]>([]);
-    // let isEdit = false;
 
+    // Get product data only if editing prodcut id is provided and therefore it is used for edit
     useEffect(() =>{
         if (editingProductId != null) {
             // isEdit = true;
@@ -38,6 +40,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
         }
     }, [token])
 
+    // Function that gets prodcut data and sets both previous and current prodcut field valies
     async function getProductData() {
         let res = await APIGetProduct(token, editingProductId)
         if (res.ok){
@@ -58,6 +61,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
                 setPrevPrice(Number(data[0].price).toFixed(2))
                 setProductPrice(Number(data[0].price).toFixed(2))
 
+                // Get features (only for edit)
                 getFeatures()
             } else {
                 useRouter('/admin/products')
@@ -68,6 +72,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
         }
     }
 
+    // This function gets features
     async function getFeatures() {
         let res = await APIGetFeatures(token, editingProductId)
         if (res.ok) {
@@ -94,9 +99,11 @@ export default function NewProductForm({categories, token, useRouter, editingPro
                 let data = await resProduct.json()
                 let product_id = data.id
                 if (features.length > 0){
+                    // The server call needs an array of strings
                     let formattedFeatures = features.map(item => item.content);
                     let resFeatures = await APIAddFeatures(token, product_id, formattedFeatures)
                     if (resFeatures.ok) {
+                        // If the call was successful, go to products (only for creating new product)
                         useRouter('/admin/products')
                     } else {
                         let err = await resProduct.json()
@@ -114,13 +121,14 @@ export default function NewProductForm({categories, token, useRouter, editingPro
     // function that handles submit when editing an existing product
     async function handleEditSubmit(event: React.MouseEvent<HTMLButtonElement>) {
         event.preventDefault()
+        // This validates the edit form and returnds error if something was invalid and edited fields if forms are correct
         let result = validateEditForm()
         let error = result.error
 
         if (error) {
             setError(error)
         } else{
-
+            // As only edited fields are returned, check if they exist and add them to be sent to the server
             let updateProductBody : Record<string, any> = {};
 
             if (result.name) updateProductBody.name = result.name
@@ -131,17 +139,17 @@ export default function NewProductForm({categories, token, useRouter, editingPro
             let updateSuccess = true;
             let deleteSuccess = true;
             let addSuccess = true;
-        if (updateProductBody && Object.keys(updateProductBody).length > 0) {
-            let resUpdate = await APIUpdateProduct(token, editingProductId, updateProductBody)
-            if (!resUpdate.ok) {
-                updateSuccess = false
-                setError("Error: something went wrong while updating Product")
-            }
-        }
 
+            if (updateProductBody && Object.keys(updateProductBody).length > 0) {
+                let resUpdate = await APIUpdateProduct(token, editingProductId, updateProductBody)
+                if (!resUpdate.ok) {
+                    updateSuccess = false
+                    setError("Error: something went wrong while updating Product")
+                }
+            }
             let toDelete = result.toDelete.map(feature => Number(feature.id))
             let newFeatures = result.newFeatures
-            
+            // If any features needs to be deleted, make the API call
             if (toDelete.length > 0) {
                 let resDel = await APIDelFeatures(token, toDelete)
                 if (!resDel.ok) {
@@ -150,6 +158,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
                 }
             }
 
+            // If any features needs to be added, make the API call
             if (newFeatures.length > 0) {
                 let resAdd = await APIAddFeatures(token, editingProductId, newFeatures)
                 if (!resAdd.ok) {
@@ -164,6 +173,8 @@ export default function NewProductForm({categories, token, useRouter, editingPro
 
     }
 
+    // This function validates input when the component is used for editing
+    // It adds only the edited fields to the result
     function validateEditForm() {
         let error = ""
         let updatedFields = 0
@@ -172,15 +183,18 @@ export default function NewProductForm({categories, token, useRouter, editingPro
         let tempPrevFeatures = prevFeatures.map(feature => feature.content)
         let tempFeatures = features.map(feature => feature.content)
 
+        // The section bellow checks which features have been added and which features have been removed.
+        // Then make 2 API calls with features to delete and to add
+
         // This creates a list of features to be created 
         const prevCopy = [...tempPrevFeatures];
         const newFeatures = tempFeatures.filter(el => {
             const index = prevCopy.indexOf(el);
             if (index !== -1) {
                 prevCopy.splice(index, 1); // Remove the first match
-                return false; // Skip this element from result
+                return false;
             }
-            return true; // Keep this element
+            return true;
         });
         // This creates a list of features to be deleted 
         const featuresCopy = [...features];
@@ -188,9 +202,9 @@ export default function NewProductForm({categories, token, useRouter, editingPro
             const index = featuresCopy.findIndex(f => f.content === el.content);
             if (index !== -1) {
                 featuresCopy.splice(index, 1); // Remove one matched object
-                return false; // Skip this element — matched
+                return false; 
             } else {
-                return true; // Keep this element — not matched
+                return true;
             }
         });
 
@@ -202,8 +216,9 @@ export default function NewProductForm({categories, token, useRouter, editingPro
 
         if (toDelete.length > 0 || newFeatures.length > 0) {
             updatedFields += 1
-        }   
+        } 
 
+        // Validate Price
         let regExp = /^\d{0,9}(?:\.\d{1,2})?$/;
         if (!regExp.test(productPrice) || productPrice == ""){
             error = "Failed to Submit: empty or invalid Price"
@@ -218,6 +233,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
             updatedFields += 1
         }
 
+        // Validate Category
         if (selectedCategory != prevCategory) {
             updatedFields += 1
             if (selectedCategory == "" || selectedCategory == "<p></p>"){
@@ -227,6 +243,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
             }
         }
 
+        // Validate Description
         if (description != prevDescription) {
             if (description == "" || description == "<p></p>"){
                 error = "Failed to Submit: empty Product Description"
@@ -237,6 +254,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
 
         }
 
+        // Validate Name
         if (productName != prevName) {
             updatedFields += 1
             if (productName == "") {
@@ -246,7 +264,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
             }
             updatedFields += 1
         }
-
+        // Check if any fields have been changed
         if (updatedFields == 0) {
             error = "Failed to Submit: please edit at least 1 field"
         }
@@ -256,7 +274,9 @@ export default function NewProductForm({categories, token, useRouter, editingPro
         return result
     }
 
+    // This function is used to validate fields when used for creating a new product
     function validateNewForm() {
+        // As only new features can be created, jsut check if any of them are empty
         let error = ""
         features.forEach((feature) => {
             if (feature.content == "" || feature.content == "<p></p>") {
@@ -264,18 +284,23 @@ export default function NewProductForm({categories, token, useRouter, editingPro
             }
         })
         
+        // Validate price
         let regExp = /^\d{0,9}(?:\.\d{1,2})?$/;
         if (!regExp.test(productPrice) || productPrice == ""){
             error = "Failed to Submit: empty or invalid Price"
         }
+
+        // Validate Description 
         if (description == "" || description == "<p></p>"){
             error = "Failed to Submit: empty Product Description"
         }
         
+        // Validate Category
         if (selectedCategory == ""){
             error = "Failed to Submit: Product Category not chosen"
         }
         
+        // Validate Name
         if (productName == ""){
             error = "Failed to Submit: empty Product Name"
         }
@@ -284,6 +309,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
     }
     return (
         <form className="w-100 m-3">
+            {/* Show error if there is text */}
             {error? 
                 <div className="form-group row d-flex justify-content-center error-box bg-danger my-4">
                     {error}
@@ -291,12 +317,14 @@ export default function NewProductForm({categories, token, useRouter, editingPro
                 :
                 <div></div>
             }
+            {/* Product Name */}
             <div className="form-group row my-2">
                 <label className="col-sm-2 col-form-label">Product Name</label>
                 <div className="col-sm-10">
                     <input onClick={() => setError('')} onChange={(e) => setProductName(e.target.value)} value={productName} type="text" className="form-control" id="inputEmail3" placeholder="Name"></input>
                 </div>
             </div>
+            {/* Category */}
             <div className="form-group row my-2">
                 <label className="col-sm-2 col-form-label">Product Category</label>
                 <div className="col-sm-10">
@@ -308,18 +336,21 @@ export default function NewProductForm({categories, token, useRouter, editingPro
                     </select>
                 </div>
             </div>
+            {/* Description with a WYSIWYG component */}
             <div className="form-group row my-2">
                 <label className="col-sm-2 col-form-label">Description</label>
                 <div onClick={() => setError('')} className="col-sm-10">
                     <TiptapEditor content={description} onChange={setDescription} />
                 </div>
             </div>
+            {/* Product Price */}
             <div className="form-group row my-2">
                 <label className="col-sm-2 col-form-label">Product Price</label>
                 <div className="col-sm-10">
                     <input onClick={() => setError('')} type="number" onChange={(e) => setProductPrice(e.target.value)} value = {productPrice} className="form-control" id="inputEmail3" placeholder="Price"></input>
                 </div>
             </div>
+            {/* Features */}
             <div className="form-group row my-2">
                 <label className="col-sm-2 col-form-label">Features</label>
                 <div className="col-sm-10">
@@ -327,6 +358,8 @@ export default function NewProductForm({categories, token, useRouter, editingPro
                         <button type="button" className="btn btn-success" onClick={() => setFeature(prev => [...prev, {content: ""}])}>Add Feature</button>
                     </div>
                     <div>
+                        {/* Features are dynamically rendered from features state */}
+                        {/* Each is a WYSIWYG component */}
                         {features.map((feature, idx) => (
                             <div className="row mb-3" key={idx}>
                                 <div onClick={() => setError('')} className="col-10">
@@ -336,6 +369,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
                                         );
                                     }}/>
                                 </div>
+                                {/* button to delete a specific feature */}
                                 <div className="col">
                                     <button type="button" className="btn btn-outline-danger" onClick={() => { setFeature(prev => prev.filter((_, i) => i !== idx)); setError('')}}>
                                         Delete
@@ -346,6 +380,7 @@ export default function NewProductForm({categories, token, useRouter, editingPro
                     </div>
                 </div>
             </div>
+            {/* Submit buttons that calls different functions based on if the form is used to create new or edit a product */}
             <div className="form-group row">
                 <button onClick={editingProductId? handleEditSubmit : handleNewSubmit} type="submit" className="w-25 btn btn-primary">Submit Changes</button>
             </div>

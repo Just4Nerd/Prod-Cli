@@ -1,9 +1,6 @@
 'use client';
-import { useRef } from 'react';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { APIDelProduct } from '@/api/products';
-import { APICreateCategory, APIUpdateCategory } from '@/api/categories';
+import { useState } from 'react';
+import { APICreateCategory } from '@/api/categories';
 
 type CategoryBoxProps = {
     token: string;
@@ -12,12 +9,13 @@ type CategoryBoxProps = {
     updateIsNew: (state) => void 
 }; 
 
+// This component is used to display the new category form
 export default function NewCategory({ updateIsNew, createCategory, updateError, token}: CategoryBoxProps){
-    const router = useRouter();
     const [name, setName] = useState('')
-    const validLayouts = ["Layout_A", "Layout_B", "Layout_C", "Layout_D", "Layout_E"]
+    const validLayouts = ["Layout_A", "Layout_B", "Layout_C", "Layout_D", "Layout_E"] // valid layout options
     const [layout, setLayout] = useState(validLayouts[0])
 
+    // Function that is called when submitting the new category
     async function onSubmit() {
         if (validLayouts.includes(layout)){
             if (name != "") {
@@ -26,6 +24,7 @@ export default function NewCategory({ updateIsNew, createCategory, updateError, 
                     updateError('')
                     let data = await res.json()
                     let newId = data.id
+                    // Update the parent object with the new valies and stop rendering the create new category form
                     createCategory(newId, name, layout)
                     updateIsNew(false)
                 } else {
@@ -61,6 +60,7 @@ export default function NewCategory({ updateIsNew, createCategory, updateError, 
                         <p>Layout type:</p>
                     </div>
                     <div className="field-right">
+                        {/* Render category select elements based on valid layouts object */}
                         <select value={layout} onClick={() => updateError('')} onChange={(e) => setLayout(e.target.value)} className="form-select" aria-label="Default select example">
                             {validLayouts.map((layout, idx) => (
                                 <option key={idx} value={layout}>{layout}</option>

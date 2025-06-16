@@ -1,8 +1,5 @@
 'use client';
-import { useRef } from 'react';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { APIDelProduct } from '@/api/products';
+import { useState } from 'react';
 import { APIUpdateCategory } from '@/api/categories';
 
 type CategoryBoxProps = {
@@ -14,21 +11,24 @@ type CategoryBoxProps = {
     updateCategory: (id: number, name: string, layout: string) => void;
 }; 
 
+// This component displays categories and edits them if edit button is pressed
 export default function CategoryBox({ updateCategory, updateError, id, name, layout, token}: CategoryBoxProps){
-    const router = useRouter();
-    const [isEdit, setEdit] = useState(false)
+    const [isEdit, setEdit] = useState(false) // Indicates if the category is being edited
+    // Editing and previous values
     const [editName, setName] = useState(name)
     const [prevName, setPrevName] = useState(name)
     const [editLayout, setLayout] = useState(layout)
     const [prevLayout, setPrevLayout] = useState(layout)
-    const validLayouts = ["Layout_A", "Layout_B", "Layout_C", "Layout_D", "Layout_E"]
+    const validLayouts = ["Layout_A", "Layout_B", "Layout_C", "Layout_D", "Layout_E"] // valid layout options
 
+    // Function that is called when edit submit is pressed
     async function onSubmit() {
         if (prevName != editName || prevLayout != editLayout) {
             if (validLayouts.includes(editLayout)){
                 if (editName != "") {
                     let res = await APIUpdateCategory(token, id, editName, editLayout)
                     if (res.ok) {
+                        // If the API call was successful, update the parent object 
                         updateError('')
                         setEdit(false)
                         updateCategory(id, editName, editLayout)
@@ -60,6 +60,7 @@ export default function CategoryBox({ updateCategory, updateError, id, name, lay
                         <h5>Category Name:</h5>
                     </div>
                     <div className="field-right">
+                        {/* Show input field if editing*/}
                         {!isEdit?
                             <h5>{name}</h5>
                             : 
@@ -81,6 +82,7 @@ export default function CategoryBox({ updateCategory, updateError, id, name, lay
                         <p>Layout type:</p>
                     </div>
                     <div className="field-right">
+                        {/* Show a select field if editing*/}
                         {!isEdit?
                             <p>{layout}</p>
                             :
@@ -95,6 +97,9 @@ export default function CategoryBox({ updateCategory, updateError, id, name, lay
                 </div>
                 <hr/>
                 <div>
+                    {/* When not editing an edit button is present */}
+                    {/* When edit is pressed, a submit and cancel buttons are shown */}
+                    {/* On cancel, editing stops and values are discarded*/}
                     {!isEdit? 
                         <div className="col-sm">
                             <a href="#" className="btn btn-primary" onClick={() => {setEdit(true); updateError('')}}>Edit</a>

@@ -1,3 +1,5 @@
+//API calls for products; Goes to /product
+
 export async function APIGetAllProducts(token) {
     const res = await fetch('http://localhost:8000/product/getAll', {
         method: 'GET',

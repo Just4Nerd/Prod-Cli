@@ -1,26 +1,24 @@
 'use client';
 
+// Import necessary hooks and extensions from Tiptap
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Bold from '@tiptap/extension-bold';
-import Italic from '@tiptap/extension-italic';
 import Underline from '@tiptap/extension-underline';
 import BulletList from '@tiptap/extension-bullet-list';
-import ListItem from '@tiptap/extension-list-item';
 import TextStyle from '@tiptap/extension-text-style';
 import FontFamily from '@tiptap/extension-font-family';
-// import { FontSize } from '@/components/TipTapFontSizeExtention';
 import React, { useEffect } from 'react';
 
 type Props = {
-  content: string;
-  onChange: (value: string) => void;
+    content: string;
+    onChange: (value: string) => void;
 };
 
+// This component is used to provide WYSIWYG input field using TipTap
 export default function TiptapEditor({ content, onChange }: Props) {
-  const editor = useEditor({
-    extensions: [
-      StarterKit.configure({
+    const editor = useEditor({
+      extensions: [
+        StarterKit.configure({
         bulletList: false,
       }),
       Underline,
@@ -29,18 +27,20 @@ export default function TiptapEditor({ content, onChange }: Props) {
       FontFamily.configure({
         types: ['textStyle'],
       }),
-      // FontSize.configure({}),
     ],
     content,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
   });
+
+  // Sync content from parent when it changes externally
   useEffect(() => {
   if (editor && content !== editor.getHTML()) {
-    editor.commands.setContent(content, false); // false = don't emit update
+    editor.commands.setContent(content, false);
   }}, [content, editor]);
 
+  // Prevent rendering until the editor is ready
   if (!editor) return null;
 
   return (
@@ -60,8 +60,7 @@ export default function TiptapEditor({ content, onChange }: Props) {
         >
           Italic
         </button>
-        <button
-          type="button"
+        <button type="button"
           className={`btn btn-sm ${editor.isActive('underline') ? 'btn-success' : 'btn-outline-success'} mx-1`}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
         >
@@ -85,19 +84,6 @@ export default function TiptapEditor({ content, onChange }: Props) {
           <option value="Courier New">Courier New</option>
           <option value="Times New Roman">Times New Roman</option>
         </select>
-        {/* <select
-            className="form-select form-select-sm w-auto mx-1 d-inline"
-            onChange={(e) => editor.chain().focus().setFontSize(e.target.value).run()}
-            defaultValue=""
-            >
-            <option value="">Size</option>
-            <option value="12px">12px</option>
-            <option value="14px">14px</option>
-            <option value="16px">16px</option>
-            <option value="18px">18px</option>
-            <option value="24px">24px</option>
-            <option value="32px">32px</option>
-          </select> */}
       </div>
 
       <EditorContent editor={editor} className="min-h-[150px] border rounded p-2 bg-body" />

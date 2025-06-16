@@ -1,3 +1,5 @@
+//API calls for clients to get data they can see
+
 export async function APIGetClientProducts(token) {
     const res = await fetch('http://localhost:8000/client', {
         method: 'GET',

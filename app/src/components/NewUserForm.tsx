@@ -11,22 +11,25 @@ type NewUserFormProps = {
     editingUserId: number;
 }; 
 
-
+// This component is used to render the form for creating new user and editing an existing user
+// editingUserId is used to indicate which one it is; if it is null then it is a new user
 export default function NewUserForm({token, useRouter, editingUserId}: NewUserFormProps) {
-    // Error is used to display an error field when it is not ''
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const [error, setError] = useState(''); // Error is used to display an error field when it is not ''
+    const [success, setSuccess] = useState(''); // Success is used primarily in user edit.
 
+    // States to store field data
     const [userLogin, setUserLogin] = useState('')
     const [userPassword, setUserPassword] = useState('');
     const [brokerCode, setBrokerCode] = useState('')
+    // State to indicate if the 'change Password' has been pressed (only in Edit)
     const [canInputBrokerCode, setCanInputBroker] = useState(false)
+    // State to indicate if the broker code has been submitted and verified (only in Edit)
     const [isBrokerCodeCorrect, setBrokerCorrect] = useState(false)
 
     //states for previous product values
     const [prevLogin, setPrevLogin] = useState('');
-    // let isEdit = false;
 
+    // Get user data from the ID; Is only done if the component is used for editing a user
     useEffect(() =>{
         if (editingUserId != null) {
             // get User data if the form is used to edit a user
@@ -34,6 +37,7 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
         }
     }, [])
 
+    // Function that gets user data if the editingUserId wasn't null
     async function getUserData() {
         let res = await APIGetUser(token, editingUserId)
         if (res.ok){
@@ -53,7 +57,7 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
         }
     }
 
-    //function to generate the login
+    //function to generate a random login
     function generateLogin() {
         let result = ''
         const length = 8
@@ -67,7 +71,7 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
         setUserLogin(result)
     }
     
-    //function to generate the password according to regex
+    //function to generate a random password according to regex
     function generatePassword() {
         const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const lower = "abcdefghijklmnopqrstuvwxyz";
@@ -120,11 +124,13 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
         }
     }
 
+    // Function that handles submit of the broker code.
     async function onBrokerCodeSubmit(event: React.MouseEvent<HTMLButtonElement>) {
         event.preventDefault()
         if (brokerCode != "") {
             let res = await APIVerifyBrokerCode(token, brokerCode)
             if (res.ok) {
+                // If successful, set the boolean to true to indicate we can change the password
                 setBrokerCorrect(true)
             } else {
                 let error = await res.json()
@@ -141,6 +147,7 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
         
     }
 
+    // Function that clears success message after a delay
     function changeSuccessAfterDelay() {
         setTimeout(() => {
         setSuccess('');
@@ -148,7 +155,8 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
     }
 
 
-    // function that handles submit when editing an existing product
+    // function that handles submit when editing an existing product;
+    // The isLogin boolean is used to determine if login or password submit was pressed
     async function handleEditSubmit(event: React.MouseEvent<HTMLButtonElement>, isLogin: boolean) {
         setError('')
         event.preventDefault()
@@ -179,6 +187,7 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
                 if (resPassword.ok) {
                     setSuccess('User Password successfully updated')
                     changeSuccessAfterDelay()
+                    setCanInputBroker(false)
                 } else {
                     setError('Error: failed to update password')
                 }
@@ -187,10 +196,10 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
 
     }
 
+    // Function that is used when creating a new user to validate login and password fields
     function validateNewForm() {
         let error = ""
 
-        
         const password_regex = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/
         if (!password_regex.test(userPassword) || userPassword == ""){
             error = "Failed to Submit: empty or invalid Password; Must contain: uppercase letter, lowercase letter, one digit, special character and be at least 8 characters long."
@@ -203,6 +212,7 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
     }
     return (
         <form className="w-100 m-3">
+            {/* Display success or error message */}
             {success && !error? 
                 <div className="form-group row d-flex justify-content-center error-box bg-success my-4">
                     {success}
@@ -217,6 +227,7 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
                 :
                 <div></div>
             }
+            {/* Login fields with a generate login button */}
             <div className="form-group row my-2">
                 <label className="col-sm-2 col-form-label">User Login</label>
                 <div className="col-sm-7">
@@ -226,8 +237,10 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
                     <button type="button" className="btn btn-secondary" onClick={(e) => {generateLogin()}}>Generate Login</button>
                 </div>
             </div>
+            {/* Determine whether to render new user or edit user fields based on editingUserId */}
             {/* When creating a new user imidiately show Password Field */}
             { !editingUserId?
+                // New User Part
                 <div>
                     <div className="form-group row my-2">
                         <label className="col-sm-2 col-form-label">User Password</label>
@@ -244,6 +257,7 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
                 </div>
 
                 :
+                // Editing User Part
                 <div>
                     <div className="form-group row">
                         <button onClick={(e) => handleEditSubmit(e, true)} type="submit" className="w-25 btn btn-primary">Submit Login Change</button>
@@ -256,6 +270,7 @@ export default function NewUserForm({token, useRouter, editingUserId}: NewUserFo
                         : 
                         <div></div>
                     }
+                    {/* If field to enter broker code is visible */}
                     { canInputBrokerCode? 
                         <div>
                             { !isBrokerCodeCorrect?

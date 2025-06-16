@@ -1,8 +1,4 @@
 'use client';
-import { useRef } from 'react';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { APIDelProduct } from '@/api/products';
 
 type ProductBoxProps = {
     onBoxClick: (number) => void;
@@ -13,10 +9,11 @@ type ProductBoxProps = {
 
 }; 
 
+// This is a component that visualizes each product for the client products overview.
 export default function ClientProductBox({ onBoxClick, id, token, name, category}: ProductBoxProps){
-    const router = useRouter();
 
     return(
+        // When a product box is clicked, go to that components page, specified by /home/id
         <div onClick={() => onBoxClick(id)} className="box-item card my-2">
             <div className="card-body">
                 <div className="box-field d-flex box-name">

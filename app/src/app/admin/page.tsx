@@ -4,10 +4,11 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from 'next/navigation';
 import NavBox from '@/components/NavBox';
 
-export default function Products(){
+// Main Admin Navigation Page
+export default function AdminMain(){
     const router = useRouter();
-    const [role, setRole] = useState<string | null>(null);
 
+    // Verify token and role to authenticate a broker
     useEffect(() =>{
         const token = localStorage.getItem('token');
         if (!token) {
@@ -31,13 +32,16 @@ export default function Products(){
         }
     })
 
+    // Function that gets passed to child components that redirects to a specific admin page
     function goToPage(event: React.MouseEvent<HTMLDivElement>, page: string) {
         router.push('/admin/'+page.toLowerCase())
     }
     return(
         <div className="container">
+            {/* Logout button; It removes token from localStorage and redirects to login */}
             <button type="button" className="btn btn-warning logout-btn m-3" onClick={() => {localStorage.removeItem('token');router.push('/');}}>Logout</button>
             <div className="row">
+                {/* Render 3 Navigation Boxes, each for a specific admin page */}
                 <div className="col-sm">
                     <NavBox goToPage={goToPage} text="Products" description="Manage Products the Clients see. Add, Delete and Update products as well as manage product features. Manage what users see which products."/>
                 </div>

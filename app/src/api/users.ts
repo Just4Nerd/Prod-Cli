@@ -1,3 +1,5 @@
+//API calls for users; Goes to /user
+
 export async function APIGetAllUsers(token : string) {
     const res = await fetch('http://localhost:8000/user/getAll', {
         method: 'GET',

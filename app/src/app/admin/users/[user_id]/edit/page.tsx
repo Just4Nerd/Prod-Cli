@@ -1,17 +1,18 @@
 'use client';
-import { APIGetAllCategories } from '@/api/categories';
-import NewProductForm from '@/components/NewProductForm';
 import NewUserForm from '@/components/NewUserForm';
 import { jwtDecode } from 'jwt-decode';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+// Page to edit an existing user
 export default function EditUser() {
+    // Take the user ID that is going to be edited from url
     const params = useParams();
     const userId = params.user_id;
     const router = useRouter();
     const [token, setToken] = useState('')
 
+    // Validate token and role to be broker
     useEffect(() =>{
         let token = localStorage.getItem('token');
         if (!token) {
@@ -43,6 +44,7 @@ export default function EditUser() {
                 <button type="button" onClick={() => router.push('/admin/users')}className="btn btn-secondary">Back</button>
             </div>
             <div className="d-flex w-100 h-100 overflow-auto justify-content-center">
+                {/* Render new user form with editing user id set to show it is used for editing*/}
                 { token &&
                     <NewUserForm editingUserId={Number(userId)} token={token} useRouter={(t) => router.push(t)}/>
                 }
