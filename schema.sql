@@ -1,13 +1,13 @@
 CREATE SCHEMA IF NOT EXISTS `prodcli` ;
 
-CREATE TABLE `prodcli`.`roles` (
+CREATE TABLE IF NOT EXISTS `prodcli`.`roles` (
 	`id` INT NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(45) NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE);
 
-INSERT INTO prodcli.roles (name) VALUES ('client');
-INSERT INTO prodcli.roles (name) VALUES ('broker');
+INSERT IGNORE INTO prodcli.roles (name) VALUES ('client');
+INSERT IGNORE INTO prodcli.roles (name) VALUES ('broker');
 
 
 CREATE TABLE IF NOT EXISTS `prodcli`.`users` (
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `prodcli`.`users` (
     `password_hash` VARCHAR(255) NOT NULL,
     `role_id` INT NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE INDEX `login_UNIQUE` (`login` ASC) VISIBLE),
+    UNIQUE INDEX `login_UNIQUE` (`login` ASC) VISIBLE,
 	CONSTRAINT `user_role`
         FOREIGN KEY (`role_id`) REFERENCES `prodcli`.`roles` (`id`)
         ON DELETE RESTRICT
