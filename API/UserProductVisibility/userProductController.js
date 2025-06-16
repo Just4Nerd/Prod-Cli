@@ -1,5 +1,6 @@
 const model = require('./userProductModel')
 
+//Function to add a new user-product visibility entry
 async function addUserProd(req, res) {
     const { user_id, product_id, show_description, show_price, show_features } = req.body;
     try {
@@ -10,6 +11,7 @@ async function addUserProd(req, res) {
     }
 }
 
+//Function to delete a user-product visibility by ID
 async function deleteUserProd(req, res) {
     const {id} = req.params
     try {
@@ -20,6 +22,7 @@ async function deleteUserProd(req, res) {
     }
 }
 
+//Function to update a user-product visibility by ID
 async function updateUserProd(req, res) {
     const {show_description, show_price, show_features } = req.body;
     const {id} = req.params

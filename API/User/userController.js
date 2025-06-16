@@ -3,6 +3,7 @@ const user_prod_model = require('../UserProductVisibility/userProductModel')
 const prodcuts_model = require('../Product/productModel')
 require('dotenv').config();
 
+//Function to create a new user and return a token if successful
 async function createUser(req, res) {
     const { login, password } = req.body;
     try {
@@ -17,6 +18,7 @@ async function createUser(req, res) {
     }
 }
 
+//Function to to hash the password
 async function hashPassword(password) {
     const bcrypt = require('bcrypt');
     try {
@@ -29,7 +31,7 @@ async function hashPassword(password) {
         res.status(500).json("Failed to hash the password")
     }
 }
-
+//Function to verify user login and return a token if successful
 async function loginUser(req, res){
     const { login, password } = req.body;
     const bcrypt = require('bcrypt');
@@ -53,6 +55,7 @@ async function loginUser(req, res){
     }
 }
 
+//Function to update specific user by ID
 async function updateUser(req, res){
     const { login, password, broker_secret} = req.body;
     const {id} = req.params
@@ -68,6 +71,7 @@ async function updateUser(req, res){
     }
 }
 
+//Function to get all clients
 async function getAllUsers(req, res){
     try {
         const result = await model.getUsers()
@@ -77,6 +81,7 @@ async function getAllUsers(req, res){
     }
 }
 
+//Function to get a client by ID
 async function getUser(req, res){
     try {
         const {id} = req.params
@@ -87,15 +92,20 @@ async function getUser(req, res){
     }
 }
 
+//Function get user-product visibility by specific user ID
 async function getUserProductView(req, res){
     try {
         const {id} = req.params
+        // Get all user-product visibility fields by specific user ID
         const prodct_view = await user_prod_model.getUserProdByUserId(id)
+        // Get all products to add their fields later
         const all_products = await prodcuts_model.getAllProducts()
+        // users to verify if the user exists in the first place
         const all_users = await model.getUsers()
 
         if (all_users.some(user => user.id == id)){
             // add all products to the product view so that they can be enabled in the future
+            // Set ID to -1 to distinguish from the rest
             all_products.forEach(product => {
                 if (!prodct_view.some(view => view.product_id == product.id)) {
                     prodct_view.push({id: -1, user_id: id, product_id: product.id,show_description: 0, show_price: 0, show_features: 0})
@@ -115,6 +125,7 @@ async function getUserProductView(req, res){
     }
 }
 
+//Function to verify if the provided broker code matches the one in .env
 async function verifyBroker(req, res){
     const { broker_code} = req.body;
     const { BROKER_SECRET } = process.env;
@@ -122,6 +133,7 @@ async function verifyBroker(req, res){
     else {res.status(400).json({error: 'Incorrect Broker Code'})}
 }
 
+//Function to delete a user by ID
 async function deleteUser(req, res) {
     const {id} = req.params
     try {
@@ -132,6 +144,7 @@ async function deleteUser(req, res) {
     }
 }
 
+//Function to create a new token
 function createToken(id, login, role){
     const jwt = require('jsonwebtoken');
 

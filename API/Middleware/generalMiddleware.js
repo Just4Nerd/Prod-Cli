@@ -1,5 +1,7 @@
 const yup = require('yup');
 
+// this validates if the request has a valid Id.
+//  It is used when no body is passed and only id is in the parameters
 async function validateId(req, res, next) {
     try {
         const id = req.params.id;

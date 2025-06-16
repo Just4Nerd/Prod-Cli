@@ -1,4 +1,6 @@
 const express = require('express')
+
+// This is the root of the API
 const app = express()
 const router = require('./router');
 const cors = require('cors');

@@ -1,10 +1,10 @@
 const pool = require('../DB/db')
 
+//an sql call to create a new user
 function createUser(login, password, role_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
-                console.log("error")
                 reject(err)
             } else {
                 sql = 'INSERT INTO prodcli.users (`login`, `password_hash`, `role_id`) VALUES (?, ?, ?)'
@@ -22,11 +22,11 @@ function createUser(login, password, role_id) {
     });
 }
 
+//an sql call update a user by ID
 function updateUser(user_id, login, password){
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
-                console.log("error")
                 reject(err)
             } else {
                 const fields = [];
@@ -65,6 +65,7 @@ function updateUser(user_id, login, password){
     })
 }
 
+//an sql call to get user by Login
 function getUser(login) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -86,6 +87,7 @@ function getUser(login) {
     });
 }
 
+//an sql call to get client data for user edit functionality (including role)
 function getUserEditData(user_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -107,6 +109,7 @@ function getUserEditData(user_id) {
     });
 }
 
+//an sql call to get all clients
 function getUsers() {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -128,13 +131,14 @@ function getUsers() {
     });
 }
 
+//an sql call to delete user
 function deleteUser(user_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
-                console.log("error")
                 reject(err)
             } else {
+                // Before deleting the user delete the user-product visiblitiy fields with said user
                 connection.execute('DELETE FROM prodcli.user_product_visibility WHERE user_id = ?', [user_id], (error) => {
                     if (error) {
                         connection.release();

@@ -2,6 +2,7 @@ const model = require('./productModel')
 const user_model = require('../User/userModel')
 const user_prod_model = require('../UserProductVisibility/userProductModel')
 
+//Function to get a all products
 async function getAllProducts(req, res){
     try {
         const result = await model.getAllProducts()
@@ -11,6 +12,7 @@ async function getAllProducts(req, res){
     }
 }
 
+//Function to get a all features by product ID
 async function getFeatures(req, res){
     try {
         const {id} = req.params
@@ -21,6 +23,7 @@ async function getFeatures(req, res){
     }
 }
 
+//Function to get a a specific product info by product ID
 async function getProduct(req, res){
     try {
         const {id} = req.params
@@ -31,6 +34,7 @@ async function getProduct(req, res){
     }
 }
 
+//Function to create a new product
 async function createProduct(req, res) {
     const { name, description, category_id, price } = req.body;
     try {
@@ -40,6 +44,8 @@ async function createProduct(req, res) {
         res.status(500).json({Error: error})
     }
 }
+
+//Function to update a product by product ID
 async function updateProduct(req, res) {
     const { name, description, category_id, price } = req.body;
     const {id} = req.params
@@ -51,6 +57,7 @@ async function updateProduct(req, res) {
     }
 }
 
+//Function to delete a specific product by ID
 async function deleteProduct(req, res) {
     const {id} = req.params
     try {
@@ -61,6 +68,7 @@ async function deleteProduct(req, res) {
     }
 }
 
+//Function to add features that are provided
 async function addFeature(req, res) {
     const { features } = req.body;
     const {id} = req.params
@@ -72,6 +80,7 @@ async function addFeature(req, res) {
     }
 }
 
+//Function to delete all features that are provided (features contains an array of feature IDs to be deleted)
 async function deleteFeatures(req, res) {
     const { features } = req.body;
     try {
@@ -82,15 +91,20 @@ async function deleteFeatures(req, res) {
     }
 }
 
+//Function to get all user-product visibility data from product ID
 async function getProductUserView(req, res){
     try {
         const {id} = req.params
+        // This returns the array of all user-product entries with a specific product ID
         const user_view = await user_prod_model.getUserProdByProdId(id)
+        // Get all users to add their data
         const all_users = await user_model.getUsers()
-        const all_products = await model.getAllProducts()
-        if (all_products.some(product => product.id == id)){
-        
-        // add all users to the user view so that they can be enabled in the future
+        // Get the product to see if it exists
+        const product = await model.getProduct(id)
+
+        if (product.length > 0){
+            // add all users to the user view so that they can be enabled in the future
+            // The ones that are not enabled get id = -1 so that they are distinct from the rest
             all_users.forEach(user => {
                 if (!user_view.some(view => view.user_id == user.id)) {
                     user_view.push({id: -1, user_id: user.id, product_id: id, show_description: 0, show_price: 0, show_features: 0})

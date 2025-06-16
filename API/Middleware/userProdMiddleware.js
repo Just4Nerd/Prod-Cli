@@ -14,6 +14,7 @@ let userProdUpdateSchema = yup.object().shape({
     show_features: yup.bool().required(),
 });
 
+// handles add user-product view; varifies if it has user_id, product_id, show_description, show_price, show_features
 async function validateAddUserProd(req, res, next) {
     try {
         req.body = await userProdAddSchema.validate(req.body);
@@ -23,6 +24,7 @@ async function validateAddUserProd(req, res, next) {
     }
 }
 
+// handles update user-product view; varifies if it has user_id, product_id, show_description, show_price, show_features as well as a valid user Id
 async function validateUpdateUserProd(req, res, next) {
     try {
         const id = req.params.id;

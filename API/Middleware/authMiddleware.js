@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+// Hanldes token verification for client
 async function verifyClientToken(req, res, next) {
     const token = req.header('token');
     if (!token) return res.status(401).json({ error: 'Access denied' });
@@ -18,6 +19,7 @@ async function verifyClientToken(req, res, next) {
         }
 };
 
+// Hanldes token verification for broker
 async function verifyBrokerToken(req, res, next) {
     const token = req.header('token');
     if (!token) return res.status(401).json({ error: 'Access denied' });

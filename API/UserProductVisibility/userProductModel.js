@@ -1,5 +1,6 @@
 const pool = require('../DB/db')
 
+//an sql call to create a user-product visibility entry
 function addUserProd(user_id, product_id, show_description, show_price, show_features ) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -21,6 +22,7 @@ function addUserProd(user_id, product_id, show_description, show_price, show_fea
     });
 }
 
+//an sql call to delete a user-product visibility entry by ID
 function deleteUserProd(user_prod_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -42,6 +44,7 @@ function deleteUserProd(user_prod_id) {
     });
 }
 
+//an sql call to get all user-product visibility entries with a specific user ID
 function getUserProdByUserId(user_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -63,6 +66,7 @@ function getUserProdByUserId(user_id) {
     });
 }
 
+//an sql call to get all user-product visibility entries with a specific product ID
 function getUserProdByProdId(prod_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -84,6 +88,7 @@ function getUserProdByProdId(prod_id) {
     });
 }
 
+//an sql call to get all user-product visibility entry with a specific user and product IDs
 function getUserProd(user_id, prod_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -105,6 +110,7 @@ function getUserProd(user_id, prod_id) {
     });
 }
 
+//an sql call to update a specific user-product visibility entry
 function updateUserProd(user_prod_id, show_description, show_price, show_features) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {

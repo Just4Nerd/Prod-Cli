@@ -1,5 +1,6 @@
 const model = require('./categoryModel')
 
+//Function to get All categories
 async function getAllCategories(req, res){
     try {
         const result = await model.getCategories()
@@ -9,6 +10,7 @@ async function getAllCategories(req, res){
     }
 }
 
+//Function to update category by ID
 async function updateCategory(req, res){
     try {
         const { name, layout_type } = req.body;
@@ -20,6 +22,7 @@ async function updateCategory(req, res){
     }
 }
 
+//Function to create a new category
 async function createCategory(req, res){
     try {
         const { name, layout_type } = req.body;

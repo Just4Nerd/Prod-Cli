@@ -21,6 +21,7 @@ let verifyBrokerCodeSchema = yup.object().shape({
     broker_code: yup.string().required()
 });
 
+// handles create user; varifies if it has login and password that matches regex
 async function validateCreateUser(req, res, next) {
     try {
         req.body = await createUserSchema.validate(req.body);
@@ -30,6 +31,7 @@ async function validateCreateUser(req, res, next) {
     }
 }
 
+// handles login user; varifies if it has login and password
 async function validateLoginUser(req, res, next) {
     try {
         req.body = await loginUserSchema.validate(req.body);
@@ -40,6 +42,7 @@ async function validateLoginUser(req, res, next) {
 
 }
 
+// handles update user; varifies if it has login and password that matches regex as well as a valid ID
 async function validateUpdateUser(req, res, next) {
     try {
         const id = req.params.id;
@@ -53,6 +56,7 @@ async function validateUpdateUser(req, res, next) {
     }
 }
 
+// handles broker code verification; varifies if it has broker code field
 async function validateBrokerCode(req, res, next) {
     try {
         req.body = await verifyBrokerCodeSchema.validate(req.body);

@@ -1,5 +1,6 @@
 const pool = require('../DB/db')
 
+//an sql call to get all products
 function getAllProducts() {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -21,6 +22,7 @@ function getAllProducts() {
     });
 }
 
+//an sql call to get a specific product by ID
 function getProduct(product_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -42,6 +44,7 @@ function getProduct(product_id) {
     });
 }
 
+//an sql call to get all feature of a product by product ID
 function getFeatures(product_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -63,6 +66,7 @@ function getFeatures(product_id) {
     });
 }
 
+//an sql call to get all features
 function getAllFeatures() {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -84,7 +88,7 @@ function getAllFeatures() {
     });
 }
 
-
+//an sql call to create a new product
 function createProduct(name, description, category_id, price) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -109,12 +113,16 @@ function createProduct(name, description, category_id, price) {
     });
 }
 
+//an sql call to update a product by ID
 function updateProduct(product_id, name, description, category_id, price) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
                 reject(err)
             } else {
+
+                // Only fields that need to be updated are passed. 
+                // Therefore check which are passed and add them to the sql string
                 const fields = [];
                 const values = [];
                 if (name) {
@@ -162,17 +170,20 @@ function updateProduct(product_id, name, description, category_id, price) {
     })
 }
 
+//an sql call to delete a specific product by ID
 function deleteProduct(product_id) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
             if (err) {
                 reject(err)
             } else {
+                // Delete all features that contain sais product
                 connection.execute('DELETE FROM prodcli.product_features WHERE product_id = ?', [product_id], (error) => {
                     if (error) {
                         connection.release();
                         return reject(error);
                     }
+                    // Delete all user-product-visiblity entries that contain said product
                     connection.execute('DELETE FROM prodcli.user_product_visibility WHERE product_id = ?', [product_id], (error) => {
                         if (error) {
                             connection.release();
@@ -194,6 +205,7 @@ function deleteProduct(product_id) {
     });
 }
 
+//an sql call to add features with specific product ID
 function addFeature(product_id, features) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -217,6 +229,7 @@ function addFeature(product_id, features) {
     });
 }
 
+//an sql call to delete features
 function deleteFeatures(features) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {

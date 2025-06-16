@@ -5,9 +5,8 @@ const {validateAddUserProd, validateUpdateUserProd} = require('../Middleware/use
 const {validateId} = require('../Middleware/generalMiddleware')
 const {addUserProd, deleteUserProd, updateUserProd} = require('./userProductController')
 
-// router.get('/getAll', verifyBrokerToken, getAllCategories)
-router.post('/add', [verifyBrokerToken, validateAddUserProd], addUserProd)
-router.delete('/:id/', [verifyBrokerToken, validateId], deleteUserProd)
-router.post('/:id/', [verifyBrokerToken, validateUpdateUserProd], updateUserProd)
+router.post('/add', [verifyBrokerToken, validateAddUserProd], addUserProd) //Route to add a new user-product visibility entry
+router.delete('/:id/', [verifyBrokerToken, validateId], deleteUserProd) //Route to delete a specific user-product visibility by ID
+router.post('/:id/', [verifyBrokerToken, validateUpdateUserProd], updateUserProd) //Route to update a specific user-product visibility by ID
 
 module.exports = router;

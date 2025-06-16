@@ -1,5 +1,6 @@
 const pool = require('../DB/db')
 
+//an sql call to get all categories
 function getCategories() {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -21,6 +22,7 @@ function getCategories() {
     });
 }
 
+//an sql call to update category name and layout_type by id
 function updateCategory(id, name, layout_type) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {
@@ -42,6 +44,7 @@ function updateCategory(id, name, layout_type) {
     });
 }
 
+//an sql call to create a new category with provided name and layout_type
 function createCategory(name, layout_type) {
     return new Promise((resolve, reject) => {
         pool.getConnection( function(err, connection) {

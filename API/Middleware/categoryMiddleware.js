@@ -5,6 +5,7 @@ let categorySchema = yup.object().shape({
     layout_type: yup.string().required(),
 });
 
+// handles update category; varifies if it has name, layout and valid id
 async function validateUpdateCategory(req, res, next) {
     try {
         const id = req.params.id;
@@ -18,6 +19,7 @@ async function validateUpdateCategory(req, res, next) {
     }
 }
 
+// handles create category; varifies if it has name and layout
 async function validateCreateCategory(req, res, next) {
     try {
         req.body = await categorySchema.validate(req.body);

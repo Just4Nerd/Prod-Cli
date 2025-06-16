@@ -81,7 +81,11 @@ export default function ViewBox({ isParentUser, updateUserProdShow, updateUserPr
             <div className="card-body">
                 <div className="box-field d-flex box-name" onClick={(e) => router.push('/admin/users/' + id)}>
                     <div className="field-left mr-3">
-                        <h5>Product Name:</h5>
+                        {isParentUser?
+                            <h5>Product Name:</h5>
+                            :
+                            <h5>User Login:</h5>
+                        }
                     </div>
                     <div className="field-right">
                         <h5>{title}</h5>
@@ -90,7 +94,11 @@ export default function ViewBox({ isParentUser, updateUserProdShow, updateUserPr
                 <hr/>
                 <div className="box-field d-flex">
                     <div className="field-left mr-3">
-                        <p>Product ID:</p>
+                        {isParentUser?
+                            <p>Product ID:</p>
+                            :
+                            <p>User ID:</p>
+                        }
                     </div>
                     <div className="field-right">
                         <p>{itemId}</p>
