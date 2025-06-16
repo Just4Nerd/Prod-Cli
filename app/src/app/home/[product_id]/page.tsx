@@ -58,7 +58,6 @@ export default function ClientProductDetailed(){
 
     // This gets all product data that is visible to the client
     async function getProductData(token){
-        console.log(productId)
         let res = await APIGetClientProductData(token, productId)
         if (res.ok) {
             const data = await res.json(); 

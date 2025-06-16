@@ -27,7 +27,6 @@ async function createCategory(req, res){
     try {
         const { name, layout_type } = req.body;
         const result = await model.createCategory(name, layout_type)
-        console.log(result)
         res.status(200).json({message: 'Success', id: result.insertId})
     } catch(error) {
         res.status(500).json({Error: error})

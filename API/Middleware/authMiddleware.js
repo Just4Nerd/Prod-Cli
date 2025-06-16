@@ -8,7 +8,6 @@ async function verifyClientToken(req, res, next) {
         try {
             const decoded = await jwt.verify(token, process.env.JWT_SECRET);
             if (decoded.role != "1"){
-                console.log(2)
                 return res.status(403).json({ error: 'Access denied' });
             }
             req.current_user_id = decoded.id;
