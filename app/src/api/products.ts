@@ -1,7 +1,7 @@
 //API calls for products; Goes to /product
 
 export async function APIGetAllProducts(token) {
-    const res = await fetch('http://localhost:8000/product/getAll', {
+    const res = await fetch('https://prod-cli.onrender.com/product/getAll', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token }
     });
@@ -10,7 +10,7 @@ export async function APIGetAllProducts(token) {
 }
 
 export async function APIGetProduct(token, product_id) {
-    const res = await fetch(`http://localhost:8000/product/${product_id}`, {
+    const res = await fetch(`https://prod-cli.onrender.com/product/${product_id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token }
     });
@@ -20,7 +20,7 @@ export async function APIGetProduct(token, product_id) {
 
 
 export async function APICreateProduct(token, name: string, description: string, category_id: number, price: number) {
-    const res = await fetch(`http://localhost:8000/product/create`, {
+    const res = await fetch(`https://prod-cli.onrender.com/product/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', token: token },
         body: JSON.stringify({ name, description, category_id, price }),
@@ -31,7 +31,7 @@ export async function APICreateProduct(token, name: string, description: string,
 
 export async function APIUpdateProduct(token, product_id, body: Record<string, any>) {
 
-    const res = await fetch(`http://localhost:8000/product/${product_id}/update`, {
+    const res = await fetch(`https://prod-cli.onrender.com/product/${product_id}/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', token: token },
         body: JSON.stringify(body),
@@ -41,7 +41,7 @@ export async function APIUpdateProduct(token, product_id, body: Record<string, a
 }
 
 export async function APIGetProductUserView(token: string, product_id : number) {
-    const res = await fetch(`http://localhost:8000/product/${product_id}/productview`, {
+    const res = await fetch(`https://prod-cli.onrender.com/product/${product_id}/productview`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token }
     });
@@ -51,7 +51,7 @@ export async function APIGetProductUserView(token: string, product_id : number) 
 
 
 export async function APIAddFeatures(token: string, product_id: number, features: string[]) {
-    const res = await fetch(`http://localhost:8000/product/${product_id}/feature/add`, {
+    const res = await fetch(`https://prod-cli.onrender.com/product/${product_id}/feature/add`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', token: token},
         body: JSON.stringify({ features}),
@@ -61,7 +61,7 @@ export async function APIAddFeatures(token: string, product_id: number, features
 }
 
 export async function APIGetFeatures(token: string, product_id: number) {
-    const res = await fetch(`http://localhost:8000/product/${product_id}/features`, {
+    const res = await fetch(`https://prod-cli.onrender.com/product/${product_id}/features`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token},
     });
@@ -70,7 +70,7 @@ export async function APIGetFeatures(token: string, product_id: number) {
 }
 
 export async function APIDelFeatures(token: string, features: number[]) {
-    const res = await fetch(`http://localhost:8000/product/features/delete`, {
+    const res = await fetch(`https://prod-cli.onrender.com/product/features/delete`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json', token: token},
         body: JSON.stringify({ features}),
@@ -79,7 +79,7 @@ export async function APIDelFeatures(token: string, features: number[]) {
 }
 
 export async function APIDelProduct(token: string, product_id: number) {
-    const res = await fetch(`http://localhost:8000/product/${product_id}`, {
+    const res = await fetch(`https://prod-cli.onrender.com/product/${product_id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json', token: token},
     });

@@ -1,7 +1,7 @@
 //API calls for users; Goes to /user
 
 export async function APIGetAllUsers(token : string) {
-    const res = await fetch('http://localhost:8000/user/getAll', {
+    const res = await fetch('https://prod-cli.onrender.com/user/getAll', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token }
     });
@@ -10,7 +10,7 @@ export async function APIGetAllUsers(token : string) {
 }
 
 export async function APIGetUser(token: string, user_id : number) {
-    const res = await fetch(`http://localhost:8000/user/${user_id}`, {
+    const res = await fetch(`https://prod-cli.onrender.com/user/${user_id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token }
     });
@@ -19,7 +19,7 @@ export async function APIGetUser(token: string, user_id : number) {
 }
 
 export async function APIGetUserProductView(token: string, user_id : number) {
-    const res = await fetch(`http://localhost:8000/user/${user_id}/productview`, {
+    const res = await fetch(`https://prod-cli.onrender.com/user/${user_id}/productview`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token }
     });
@@ -28,7 +28,7 @@ export async function APIGetUserProductView(token: string, user_id : number) {
 }
 
 export async function APIDelUser(token: string, user_id: number) {
-    const res = await fetch(`http://localhost:8000/user/${user_id}`, {
+    const res = await fetch(`https://prod-cli.onrender.com/user/${user_id}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json', token: token},
     });
@@ -36,7 +36,7 @@ export async function APIDelUser(token: string, user_id: number) {
 }
 
 export async function APICreateUser(token: string, login: string, password: string) {
-    const res = await fetch(`http://localhost:8000/user/register`, {
+    const res = await fetch(`https://prod-cli.onrender.com/user/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', token: token },
         body: JSON.stringify({ login, password }),
@@ -46,7 +46,7 @@ export async function APICreateUser(token: string, login: string, password: stri
 }
 
 export async function APIUpdateUser(token, user_id, body: Record<string, any>) {
-    const res = await fetch(`http://localhost:8000/user/${user_id}/update`, {
+    const res = await fetch(`https://prod-cli.onrender.com/user/${user_id}/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', token: token },
         body: JSON.stringify(body),
@@ -56,7 +56,7 @@ export async function APIUpdateUser(token, user_id, body: Record<string, any>) {
 }
 
 export async function APIVerifyBrokerCode(token: string, broker_code: string) {
-    const res = await fetch(`http://localhost:8000/user/verifybroker`, {
+    const res = await fetch(`https://prod-cli.onrender.com/user/verifybroker`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', token: token },
         body: JSON.stringify({ broker_code }),

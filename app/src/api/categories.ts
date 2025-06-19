@@ -1,7 +1,7 @@
 //API calls for categories; Goes to /category
 
 export async function APIGetAllCategories(token) {
-    const res = await fetch('http://localhost:8000/category/getAll', {
+    const res = await fetch('https://prod-cli.onrender.com/category/getAll', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token }
     });
@@ -10,7 +10,7 @@ export async function APIGetAllCategories(token) {
 }
 
 export async function APIUpdateCategory(token, id, name, layout_type: string, ) {
-    const res = await fetch(`http://localhost:8000/category/${id}/update`, {
+    const res = await fetch(`https://prod-cli.onrender.com/category/${id}/update`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', token: token },
         body: JSON.stringify({name, layout_type}),
@@ -20,7 +20,7 @@ export async function APIUpdateCategory(token, id, name, layout_type: string, ) 
 }
 
 export async function APICreateCategory(token, name, layout_type: string, ) {
-    const res = await fetch(`http://localhost:8000/category/create`, {
+    const res = await fetch(`https://prod-cli.onrender.com/category/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', token: token },
         body: JSON.stringify({name, layout_type}),

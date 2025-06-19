@@ -1,7 +1,7 @@
 //API calls for clients to get data they can see
 
 export async function APIGetClientProducts(token) {
-    const res = await fetch('http://localhost:8000/client', {
+    const res = await fetch('https://prod-cli.onrender.com/client', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token }
     });
@@ -10,7 +10,7 @@ export async function APIGetClientProducts(token) {
 }
 
 export async function APIGetClientProductData(token, product_id) {
-    const res = await fetch(`http://localhost:8000/client/${product_id}`, {
+    const res = await fetch(`https://prod-cli.onrender.com/client/${product_id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', token: token }
     });
